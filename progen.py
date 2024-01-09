@@ -1,9 +1,9 @@
-"""----------This is the progen v.0.1 documentation----------
+"""----------This is the progen v.0.2 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
-Date: 24/01/08
-Version: 0.1
+Date: 24/01/09
+Version: 0.2
 
 Description:
 This script generates and displays equippable items for a player.
@@ -13,7 +13,7 @@ This script generates and displays equippable items for a player.
 General inputs:
     
         
-Version : 0.1
+Version : 0.2
 """
 
 #--------------------Import--------------------#
@@ -88,6 +88,9 @@ class Equippable:
 class Player:
     def __init__(self):
         ########self.name = input("Enter your name\n")
+        self.name = "Lexelis"
+        self.color = [207, 133, 214]
+        
         self.max_health = 50
         self.current_health = self.max_health
         self.equipped_items = []
@@ -159,13 +162,15 @@ def main():
                     
             # Print the player's inventory
             if ans == "inventory":
+                print("\nInventory")
                 for i in range(len(player.inventory)):
-                    full_item_print(player.inventory[i])
+                    print(full_item_print(player.inventory[i]))
                     
             elif ans == "player":
+                print("\n"+character_print(player))
                 for i in range(len(player.equipped_items)):
-                    full_item_print(player.equipped_items[i])
-                print("Total player's defense",player.total_defense)
+                    print(full_item_print(player.equipped_items[i]))
+                print("Total player's defense :",full_stat("defense"))
         
         # Input is accepted
         elif ans in correct[L[-1]]:
@@ -206,7 +211,7 @@ def entry():
 
 # Dynamic input function changing with current level
 def lexinput():
-    u=""
+    u="\n"
     # Write the current levels
     for i in range(len(L)):
         if i == len(L) - 1:
@@ -260,14 +265,15 @@ def create_item():
     return item
 
 def item_print(item):
-    print("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
+    return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
           + "▣ " 
           + Color.rarity_colors[item.rarity]
           + item.name 
-          + "\033[39m")
+          + "\033[39m"
+          )
     
 def full_item_print(item):
-    print("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
+    return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
           + "▣ " 
           + Color.rarity_colors[item.rarity]
           + item.name 
@@ -276,11 +282,14 @@ def full_item_print(item):
           +str(item.item_id)
           +"]\n"
           +str(item.stats["defense"])
-          +" defense\n")
-    
-def receive_damage(player,damage):
-    #total_defence = sum((x for x in ))
-    pass
+          +" defense\n"
+          )
+
+def character_print(character):
+    return ("\x1b[38;2;{};{};{}m".format(character.color[0],character.color[1],character.color[2]) 
+            + character.name 
+            + "\033[39m"
+            )
     
 def open_chest(x):
     print("Woaw you found a chest of "+str(x)+" items!")
@@ -289,10 +298,16 @@ def open_chest(x):
         player.add_inventory(item)
     
     for i in range(len(created_items)):
-        item_print(created_items[i])
+        print(item_print(created_items[i]))
         
 def full_stat(stat_type):
-    pass
+    return sum(item.stats[stat_type] for item in player.equipped_items)
+
+
+def receive_damage(character,damage):
+    actual_damage = max (0, damage - full_stat("defense"))
+    print(character_print(character),"receive",actual_damage,"damage")
+    character.current_health -= actual_damage 
 
 #--------------------Dictionaries--------------------#
 # Types of items
@@ -354,4 +369,3 @@ if __name__ == "__main__":
     main()
     
 #Todo
-# List items with id
