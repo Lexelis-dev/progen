@@ -1,9 +1,9 @@
-"""----------This is the progen v.0.2 documentation----------
+"""----------This is the progen v.0.3 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
-Date: 24/01/09
-Version: 0.2
+Date: 24/01/10
+Version: 0.3
 
 Description:
 This script generates and displays equippable items for a player.
@@ -13,12 +13,14 @@ This script generates and displays equippable items for a player.
 General inputs:
     
         
-Version : 0.2
+Version : 0.3
 """
 
 #--------------------Import--------------------#
+import os
 import random
-from colorama import Fore
+import colorama
+colorama.init()
 
 #--------------------Classes--------------------#
 # See LexeCMD for more informations
@@ -113,21 +115,21 @@ class Player:
     # Use the equip_item but find the corresponding id
     def equip_item_with_id(self,num):
         for i in self.inventory:
-            if i.item_id == num:
+            if i.item_id == int(num):
                 self.equip_item(i)
                 return None
         error("Id not found in inventory")
             
     def unequip_item_with_id(self,num):
         for i in self.equipped_items:
-            if i.item_id == num:
+            if i.item_id == int(num):
                 self.unequip_item(i)
                 return None
         error("Id not found in inventory")
     
     def remove_inventory_with_id(self,num):
         for i in self.inventory:
-            if i.item_id == num:
+            if i.item_id == int(num):
                 self.remove_inventory(i)
                 return None
         error("Id not found in inventory")
@@ -142,6 +144,10 @@ def main():
     
     while True:
         ans = entry()
+        clear_screen()
+        # Seperate the input words into a list
+        ans_parts = ans.split()
+        first_part = ans_parts[0]
         
         # Quit the game, whitout saving!
         if ans == "exit.":
@@ -159,25 +165,16 @@ def main():
             #The player opens a menue
             else:
                 L.append(ans)
-                    
-            # Print the player's inventory
-            if ans == "inventory":
-                print("\nInventory")
-                for i in range(len(player.inventory)):
-                    print(full_item_print(player.inventory[i]))
-                    
-            elif ans == "player":
-                print("\n"+character_print(player))
-                for i in range(len(player.equipped_items)):
-                    print(full_item_print(player.equipped_items[i]))
-                print("Total player's defense :",full_stat("defense"))
         
         # Input is accepted
-        elif ans in correct[L[-1]]:
+        elif first_part in correct[L[-1]]:
             
             # Input activates a command
-            if ans in end_functions["end_fun_name"]:
-                end_functions["end_fun"][end_functions["end_fun_name"].index(ans)]()
+            if first_part in end_functions_player_1arg["end_fun_name"]:
+                if len(ans_parts) == 2:
+                    end_functions_player_1arg["end_fun"][end_functions_player_1arg["end_fun_name"].index(first_part)](player,ans_parts[1])
+                else:
+                    error("This function only accept one argument")
                     
             # Input is already a used values and goes to another level
             else:
@@ -197,7 +194,17 @@ def main():
         
     return player
 
+# Clear the screen
+def clear_screen():
+    # For Windows
+    if os.name == 'nt':
+        _ = os.system('cls')
+    # For other operating systems (Linux, macOS)
+    else:
+        _ = os.system('clear')
+
 def entry():
+    prompt()
     try: 
         # Attempt to translate the input
         return translate(lexinput())
@@ -208,10 +215,22 @@ def entry():
         error("Input can't be accepted")
         # Remove the last level as it will create an infinite loop
         del L[-1]
+        
+# Show relevant information
+def prompt():
+    if L[-1] == "inventory":
+        print("Inventory")
+        for i in range(len(player.inventory)):
+            print(full_item_print(player.inventory[i]))
+    elif L[-1] == "player":
+        print(character_print(player))
+        for i in range(len(player.equipped_items)):
+            print(full_item_print(player.equipped_items[i]))
+        print("Total player's defense :",full_stat("defense"))
 
 # Dynamic input function changing with current level
 def lexinput():
-    u="\n"
+    u=""
     # Write the current levels
     for i in range(len(L)):
         if i == len(L) - 1:
@@ -219,11 +238,10 @@ def lexinput():
         else:
             u+= L[i] + "/"
     return input(u).lower()
-
-def error(message):
-    print("\n" + Color.sys_red + "Lexerror " + Color.sys_purple + message + "\033[39m")
     
 def translate(ans):
+    command_parts = ans.split()
+    command_name = command_parts[0]
     
     for i in end_correct:
         try :
@@ -231,10 +249,21 @@ def translate(ans):
             # Input is found within the lists to translate
             if ans in end_correct[i]:
                 return i
-                break
         # Input isn't found in said lists, can still be a correct input
         except TypeError:
             continue
+        
+    for i in correct[L[-1]]:
+        try :
+            
+            # Input is found within the lists to translate
+            if command_name in correct[L[-1]][i]:
+                command_parts[0] = i
+                return " ".join(command_parts)
+        # Input isn't found in said lists, can still be a correct input
+        except TypeError:
+            continue 
+    
     return ans
 
 # Give a list of possible entries
@@ -255,15 +284,19 @@ def alias():
         print("There is no current aliases")
     for i in sorted(temp_alias):
         print(str(i)+":",", ".join(sorted(temp_alias[i])))
+
+def error(message):
+    print("\n" + Color.sys_red + "Lexerror " + Color.sys_purple + message + "\033[39m")
     
 #--------------------The game functions--------------------#
-    
+# Create an item
 def create_item():
     global created_items
     item = Equippable()
     created_items.append(item)
     return item
 
+# Return a simple colored string with the item symbol and name
 def item_print(item):
     return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
           + "▣ " 
@@ -272,6 +305,7 @@ def item_print(item):
           + "\033[39m"
           )
     
+# Return an advance colored string with the item symbol, name, id, and stats
 def full_item_print(item):
     return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
           + "▣ " 
@@ -285,25 +319,26 @@ def full_item_print(item):
           +" defense\n"
           )
 
+# Return a simple colored string the character's name
 def character_print(character):
     return ("\x1b[38;2;{};{};{}m".format(character.color[0],character.color[1],character.color[2]) 
             + character.name 
             + "\033[39m"
             )
     
+# Give a certain amount of items to the player
 def open_chest(x):
     print("Woaw you found a chest of "+str(x)+" items!")
     for _ in range(x):
         item = create_item()
         player.add_inventory(item)
-    
-    for i in range(len(created_items)):
-        print(item_print(created_items[i]))
+        print(item_print(item))
         
+# Return the total stats of the player from their gears
 def full_stat(stat_type):
     return sum(item.stats[stat_type] for item in player.equipped_items)
 
-
+# Calculate and gives damage to any character
 def receive_damage(character,damage):
     actual_damage = max (0, damage - full_stat("defense"))
     print(character_print(character),"receive",actual_damage,"damage")
@@ -338,14 +373,19 @@ names = {
 # List of possible entries
 correct = {
     # Level1
-    "main":{
-        "combat"
+    "progen":{
+        None
     },
     
     # Level2
     "inventory":{
-        "player.equip_item()":["equip"]
-            }
+        "Player.equip_item_with_id":["equip"],
+        "Player.remove_inventory_with_id":["discard"]
+    },
+    
+    "player":{
+        "Player.unequip_item_with_id":["unequip"],
+    }
 }
 
 # The menues
@@ -356,15 +396,18 @@ end_correct = {
 
 }
 
-if __name__ == "__main__":
-    L = ["main"]
-    player = Player()
+# List of functions that affect the player and that the user needs to put one argument
+end_functions_player_1arg = {
+    "end_fun":[Player.equip_item_with_id, Player.unequip_item_with_id, Player.remove_inventory_with_id],
+    "end_fun_name":[]
+    }
+for i in end_functions_player_1arg["end_fun"]:
+    end_functions_player_1arg["end_fun_name"].append("Player."+i.__name__)
     
-    # List functions that won't make main() move forward
-    end_functions = {
-        "end_fun":[player.equip_item_with_id, player.unequip_item_with_id, player.remove_inventory_with_id],
-        "end_fun_name":[]
-        }
+# Initialise if the script is executed
+if __name__ == "__main__":
+    L = ["progen"]
+    player = Player()
     
     main()
     
