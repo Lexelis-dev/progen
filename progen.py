@@ -1,9 +1,9 @@
-"""----------This is the progen v.0.3 documentation----------
+"""----------This is the progen v.0.4 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
 Date: 24/01/10
-Version: 0.3
+Version: 0.4
 
 Description:
 This script generates and displays equippable items for a player.
@@ -13,7 +13,7 @@ This script generates and displays equippable items for a player.
 General inputs:
     
         
-Version : 0.3
+Version : 0.4
 """
 
 #--------------------Import--------------------#
@@ -33,11 +33,13 @@ class BaseColor :
     rarity_purple = [130, 73, 115]
     rarity_yellow = [181, 179, 110]
     
+    
 class Color :
     pass
 
 for i in {k: v for k, v in vars(BaseColor).items() if not k.startswith('__')}:
     setattr(Color, i, "\x1b[38;2;{};{};{}m".format(*getattr(BaseColor, i)))
+    
     
 Color.rarity_colors = {
     "white": Color.rarity_white,
@@ -46,6 +48,7 @@ Color.rarity_colors = {
     "purple": Color.rarity_purple,
     "yellow": Color.rarity_yellow
 }
+
 
 # Create an equipable item
 class Equippable:
@@ -62,7 +65,8 @@ class Equippable:
         
     # Rarity
     def set_rarity(self):
-        return random.choices(["white","green","blue","purple","yellow"], weights=[0.6, 0.3, 0.2, 0.01, 0.001], k=1)[0]
+        return random.choices(["white","green","blue","purple","yellow"],
+                              weights=[0.6, 0.3, 0.2, 0.01, 0.001], k=1)[0]
     
     # Not a unique name
     def set_name(self):
@@ -85,6 +89,7 @@ class Equippable:
     # Stats
     def set_defense(self):
         return self.level + self.level * random.randint(0, 1) * 0.25
+    
     
 # Player's attributes
 class Player:
@@ -114,6 +119,7 @@ class Player:
         
     # Use the equip_item but find the corresponding id
     def equip_item_with_id(self,num):
+        #################Surely I can simplify this
         for i in self.inventory:
             if i.item_id == int(num):
                 self.equip_item(i)
@@ -180,11 +186,9 @@ def main():
             else:
                 L.append(ans)
                 
-        # User asks for help
         elif ans == "help":
             lexhelp()
         
-        # User asks for aliases
         elif ans == "alias":
             alias()
             
@@ -194,7 +198,6 @@ def main():
         
     return player
 
-# Clear the screen
 def clear_screen():
     # For Windows
     if os.name == 'nt':
@@ -220,23 +223,23 @@ def entry():
 def prompt():
     if L[-1] == "inventory":
         print("Inventory")
-        for i in range(len(player.inventory)):
-            print(full_item_print(player.inventory[i]))
+        for i in player.inventory:
+            print(full_item_print(i))
     elif L[-1] == "player":
         print(character_print(player))
-        for i in range(len(player.equipped_items)):
-            print(full_item_print(player.equipped_items[i]))
+        for i in player.equipped_items:
+            print(full_item_print(i))
         print("Total player's defense :",full_stat("defense"))
 
 # Dynamic input function changing with current level
 def lexinput():
     u=""
     # Write the current levels
-    for i in range(len(L)):
+    for i, v in enumerate(L):
         if i == len(L) - 1:
-            u+= L[i] + ">"
+            u+= v + ">"
         else:
-            u+= L[i] + "/"
+            u+= v + "/"
     return input(u).lower()
     
 def translate(ans):
@@ -289,7 +292,6 @@ def error(message):
     print("\n" + Color.sys_red + "Lexerror " + Color.sys_purple + message + "\033[39m")
     
 #--------------------The game functions--------------------#
-# Create an item
 def create_item():
     global created_items
     item = Equippable()
@@ -298,37 +300,37 @@ def create_item():
 
 # Return a simple colored string with the item symbol and name
 def item_print(item):
-    return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
-          + "▣ " 
-          + Color.rarity_colors[item.rarity]
-          + item.name 
-          + "\033[39m"
+    return (f"\x1b[38;2;{item.color[0]};{item.color[1]};{item.color[2]}m"
+          f"▣ "
+          f"{Color.rarity_colors[item.rarity]}"
+          f"{item.name}" 
+          f"\033[39m"
           )
     
 # Return an advance colored string with the item symbol, name, id, and stats
 def full_item_print(item):
-    return ("\x1b[38;2;{};{};{}m".format(item.color[0],item.color[1],item.color[2]) 
-          + "▣ " 
-          + Color.rarity_colors[item.rarity]
-          + item.name 
-          + "\033[39m"
-          +" ["
-          +str(item.item_id)
-          +"]\n"
-          +str(item.stats["defense"])
-          +" defense\n"
+    return (f"\x1b[38;2;{item.color[0]};{item.color[1]};{item.color[2]}m"
+          f"▣ " 
+          f"{Color.rarity_colors[item.rarity]}"
+          f"{item.name}" 
+          f"\033[39m"
+          f" ["
+          f"{str(item.item_id)}"
+          f"]\n"
+          f"{str(item.stats['defense'])}"
+          f" defense\n"
           )
 
 # Return a simple colored string the character's name
 def character_print(character):
-    return ("\x1b[38;2;{};{};{}m".format(character.color[0],character.color[1],character.color[2]) 
-            + character.name 
-            + "\033[39m"
+    return (f"\x1b[38;2;{character.color[0]};{character.color[1]};{character.color[2]}m"
+            f"{character.name}"
+            f"\033[39m"
             )
     
 # Give a certain amount of items to the player
 def open_chest(x):
-    print("Woaw you found a chest of "+str(x)+" items!")
+    print(f"Woaw you found a chest of {str(x)} items!")
     for _ in range(x):
         item = create_item()
         player.add_inventory(item)
@@ -403,6 +405,9 @@ end_functions_player_1arg = {
     }
 for i in end_functions_player_1arg["end_fun"]:
     end_functions_player_1arg["end_fun_name"].append("Player."+i.__name__)
+    
+current_floor=0
+current_room=0
     
 # Initialise if the script is executed
 if __name__ == "__main__":
