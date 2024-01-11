@@ -1,42 +1,40 @@
-"""----------This is the progen v.0.5 documentation----------
+"""----------This is the progen v.0.6 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
-Date: 24/01/10
-Version: 0.5
+Date: 24/01/11
+Version: 0.6
 
 Description:
-This script generates and displays equippable items for a player.
-
-
-
-General inputs:
-    
+    Does nothing
         
-Version : 0.5
+Version : 0.6
 """
 
 #--------------------Import--------------------#
-import os
-import random
-import colorama
-colorama.init()
+import curses
+from curses import wrapper
 
 from classes import Player, Equippable
-from functions import clear_screen, limited_choices, error, open_chest
-#--------------------The CLI functions--------------------#
-
-created_items = []
-def main():
+from functions import limited_choices, error, open_chest
+#--------------------The main function--------------------#
+def main(stdscr):
     # Initialisation
-    global player, created_items
-    open_chest(player,created_items,5)
+    # Hide the cursor
+    curses.curs_set(0)
+    curses.resize_term(40, 80)
+    stdscr.clear()
+    
+    
+    navigation_level = ["progen"]
+    player = Player()
+    open_chest(stdscr,player,5)
+    stdscr.refresh()
     
     while True:
         ans = limited_choices(player,navigation_level)
         if ans is None:
             ans=""
-        clear_screen()
         # Seperate the input words into a list
         
         # Quit the game, whitout saving!
@@ -70,9 +68,6 @@ current_room=0
     
 # Initialise if the script is executed
 if __name__ == "__main__":
-    navigation_level = ["progen"]
-    player = Player()
-    
-    main()
+    wrapper(main)
     
 #Todo

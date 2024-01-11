@@ -1,9 +1,7 @@
 import random
 
 class Equippable:
-    def __init__(self, created_items):
-        # Give a unique id
-        self.item_id = len(created_items)
+    def __init__(self,):
         self.rarity = self.set_rarity()
         self.name = self.set_name()
         self.level = self.set_level()

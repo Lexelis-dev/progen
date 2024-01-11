@@ -1,18 +1,17 @@
 from .shared_functions import item_print, full_stat, character_print
 from classes import Equippable
 
-def create_item(created_items):
-    item = Equippable(created_items)
-    created_items.append(item)
+def create_item():
+    item = Equippable()
     return item
     
 # Give a certain amount of items to the player
-def open_chest(player,created_items,x):
-    print(f"Woaw you found a chest of {str(x)} items!")
+def open_chest(stdscr,player,x):
+    stdscr.addstr(f"Woaw you found a chest of {str(x)} items!")
     for _ in range(x):
-        item = create_item(created_items)
+        item = create_item()
         player.add_inventory(item)
-        print(item_print(item))
+        item_print(stdscr, 5+_, 10, item)
 
 # Calculate and gives damage to any character
 def receive_damage(character,damage):

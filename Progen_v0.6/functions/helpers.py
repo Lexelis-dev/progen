@@ -1,14 +1,7 @@
-import os
+import curses
+
 from constants import Color
 from .shared_functions import full_stat, full_item_print, character_print
-
-def clear_screen():
-    # For Windows
-    if os.name == 'nt':
-        _ = os.system('cls')
-    # For other operating systems (Linux, macOS)
-    else:
-        _ = os.system('clear')
         
 def limited_choices(player,navigation_level):
     prompt(player,navigation_level)
