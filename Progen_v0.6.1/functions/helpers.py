@@ -3,27 +3,24 @@ import curses
 from constants import Color
 from .shared_functions import full_stat, full_item_print, character_print
         
-def limited_choices(player,navigation_level):
-    prompt(player,navigation_level)
+def limited_choices(stdscr,player,navigation_level,ans):
     if navigation_level[-1] == "progen":
-        ans = lexinput(navigation_level)
-        print(ans)
         if ans == "1" :
             return "inventory"
         elif ans == "2" :
             return "player"
     elif navigation_level[-1] == "inventory":
-        ans = lexinput(navigation_level)
         if ans == "1":
             return "close"
         elif ans == "2":
             return "player"
     elif navigation_level[-1] == "player":
-        ans = lexinput(navigation_level)
         if ans == "1" :
             return "close"
         elif ans == "2" :
             return "inventory"
+    if ans == ord("$"):
+        return "exit."
         
 # Show relevant information
 def prompt(player,navigation_level):

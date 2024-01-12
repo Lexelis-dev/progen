@@ -6,12 +6,12 @@ def create_item():
     return item
     
 # Give a certain amount of items to the player
-def open_chest(stdscr,player,x):
-    stdscr.addstr(f"Woaw you found a chest of {str(x)} items!")
+def open_chest(window,player,x):
+    window.addstr(1,1,f"Woaw you found a chest of {str(x)} items!")
     for _ in range(x):
         item = create_item()
         player.add_inventory(item)
-        item_print(stdscr, 5+_, 10, item)
+        window.addstr(5+_,10,f"▣ {item.name}")
 
 # Calculate and gives damage to any character
 def receive_damage(character,damage):
