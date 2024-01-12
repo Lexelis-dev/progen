@@ -1,4 +1,2 @@
 # Progen
-A text-based roguelite, currently in very early version 
-
-v0.4 as of 24/01/10
+A text-based roguelite, currently in very early version, nothing even works anymore (planned as I'm swithcing the project over the module curses)
