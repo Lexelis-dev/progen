@@ -23,12 +23,14 @@ def main(stdscr):
     curses.curs_set(0)  # Hide the cursor
     GAME_HEIGHT, GAME_WIDTH = 50, 120  # The default game size
     
-    screen_height, screen_width = GAME_HEIGHT, GAME_WIDTH
-    curses.resize_term(screen_height, screen_width)
+    curses.resize_term(GAME_HEIGHT+5, GAME_WIDTH+14)
+    screen_height, screen_width = stdscr.getmaxyx()
     
     main_win = curses.newwin(GAME_HEIGHT, GAME_WIDTH, 0, 0)
-    main_win.border()
-    main_win.refresh()
+    combat_monster = main_win.subwin(25, 78, 0, 0)
+    combat_player = main_win.subwin(25, 78, 25, 0)
+    combat_logs = main_win.subwin(50, 42, 0, 78)
+    main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
     
     navigation_level = ["progen"]
     player = Player()
@@ -38,28 +40,25 @@ def main(stdscr):
     while True:
         main_win.clear()
         main_win.border()
-        open_chest(main_win, player, 1)
+        if navigation_level[-1] == "progen":
+            open_chest(main_win, player, 1)
+            navigation_level.append("combat")
+        elif navigation_level[-1] == "combat":
+            combat_screen(main_win, combat_player, combat_monster, combat_logs)
         main_win.refresh()
         
         while True:
             try :
                 key = stdscr.getch()
+                
             except curses.error:
-                continue
+                pass
+            
             if (key != -1) and (key != curses.KEY_RESIZE):
                 break
-            elif key == curses.KEY_RESIZE:
-                print("b")
-                screen_height, screen_width = stdscr.getmaxyx()
-                main_win.mvwin(screen_height//2, screen_width//2)
-                main_win.refresh()
             
-            resized = curses.is_term_resized(screen_height, screen_width)
-            if resized:
-                print("a")
-                screen_height, screen_width = stdscr.getmaxyx()
-                main_win.mvwin(screen_height//2, screen_width//2)
-                main_win.refresh()
+            elif key !=-1 and key == curses.KEY_RESIZE:
+                resize_screen(stdscr,main_win,GAME_HEIGHT,GAME_WIDTH)
                 
         ans = limited_choices(stdscr,player,navigation_level,key)
         
@@ -81,6 +80,28 @@ def main(stdscr):
                 navigation_level.append(ans)
         
     return player
+
+
+# If the user tries to modify the terminal size
+def resize_screen(stdscr,window,GAME_HEIGHT,GAME_WIDTH):
+    screen_height, screen_width = stdscr.getmaxyx()
+    
+    if screen_height > GAME_HEIGHT+5 or screen_width > GAME_WIDTH+14:
+        window.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
+    
+    else:
+        curses.resize_term(GAME_HEIGHT+5, GAME_WIDTH+14)
+        screen_height, screen_width = stdscr.getmaxyx()
+        try:
+            window.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
+        except curses.error:
+            pass
+    window.refresh()
+    
+def combat_screen(main_win, combat_player, combat_monster, combat_logs):
+    combat_monster.border()
+    combat_player.border()
+    combat_logs.border()
 #--------------------Dictionaries--------------------#
 # The menues
 end_correct = {
@@ -92,6 +113,11 @@ end_correct = {
 current_floor=0
 current_room=0
     
+
+
+
+
+
 # Initialise if the script is executed
 if __name__ == "__main__":
     wrapper(main)

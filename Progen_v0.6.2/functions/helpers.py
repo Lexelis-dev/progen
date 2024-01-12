@@ -19,7 +19,7 @@ def limited_choices(stdscr,player,navigation_level,ans):
             return "close"
         elif ans == "2" :
             return "inventory"
-    if ans == ord("$"):
+    if ans == 27:
         return "exit."
         
 # Show relevant information
