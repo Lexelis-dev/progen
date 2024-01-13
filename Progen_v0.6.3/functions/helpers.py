@@ -19,6 +19,7 @@ def limited_choices(stdscr,player,navigation_level,ans):
             return "close"
         elif ans == "2" :
             return "inventory"
+    # User pressed the key escape
     if ans == 27:
         return "exit."
         

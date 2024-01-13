@@ -10,8 +10,7 @@ def open_chest(window,player,x):
     window.addstr(1,1,f"Woaw you found a chest of {str(x)} items!")
     for _ in range(x):
         item = create_item()
-        player.add_inventory(item)
-        window.addstr(5+_,10,f"▣ {item.name}")
+        window.addstr(2+_, 5, f"{item.name}")
 
 # Calculate and gives damage to any character
 def receive_damage(character,damage):

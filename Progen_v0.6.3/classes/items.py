@@ -1,7 +1,7 @@
 import random
 
 class Equippable:
-    def __init__(self,):
+    def __init__(self):
         self.rarity = self.set_rarity()
         self.name = self.set_name()
         self.level = self.set_level()
@@ -45,7 +45,8 @@ item_types = {
         "chestpiece",
         "gloves",
         "pants",
-        "boots"
+        "boots",
+        "weapon"
     ]
 }
 

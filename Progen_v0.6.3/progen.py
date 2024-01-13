@@ -1,14 +1,14 @@
-"""----------This is the progen v.0.6.1 documentation----------
+"""----------This is the progen v.0.6.3 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
-Date: 24/01/12
-Version: 0.6.1
+Date: 24/01/13
+Version: 0.6.3
 
 Description:
     Show items, "$" to quit
         
-Version : 0.6.1
+Version : 0.6.3
 """
 
 #--------------------Import--------------------#
@@ -40,9 +40,11 @@ def main(stdscr):
     while True:
         main_win.clear()
         main_win.border()
+        
         if navigation_level[-1] == "progen":
-            open_chest(main_win, player, 1)
+            open_chest(main_win, player, 5)
             navigation_level.append("combat")
+            
         elif navigation_level[-1] == "combat":
             combat_screen(main_win, combat_player, combat_monster, combat_logs)
         main_win.refresh()

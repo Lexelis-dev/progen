@@ -8,7 +8,7 @@ def full_stat(player,stat_type):
 
 # Return a simple colored string with the item symbol and name
 def item_print(stdscr,x,y,item):
-    stdscr.addstr(x,y,f"▣ {item.name}")
+    stdscr.addstr(x,y,f"{item.name}")
     
 # Return an advance colored string with the item symbol, name, id, and stats
 def full_item_print(item):
