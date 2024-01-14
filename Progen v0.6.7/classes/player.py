@@ -1,7 +1,7 @@
 class Player:
     def __init__(self, name):
         self.name = name
-        self.color = [207, 133, 214]
+        self.color = [812, 522, 839]
         
         self.max_hp = 200
         self.current_hp = self.max_hp
