@@ -1,19 +1,20 @@
-"""----------This is the progen v.0.6.4 documentation----------
+"""----------This is the progen v.0.6.5 documentation----------
 Progen - Item Generator Script
 
 Author: Lexelis
 Date: 24/01/14
-Version: 0.6.4
+Version: 0.6.5
 
 Description:
     Show items and monsters, "escape" to quit
         
-Version : 0.6.4
+Version : 0.6.5
 """
 
 #--------------------Import--------------------#
 import curses
 from curses import wrapper
+from math import ceil
 
 from classes import Player, Monster, spawn_monster, Equippable
 from functions import limited_choices, error, open_chest
@@ -103,14 +104,24 @@ def resize_screen(stdscr,window,GAME_HEIGHT,GAME_WIDTH):
     window.refresh()
     
 def combat_screen(main_win, combat_player, combat_monster, combat_logs, player, current_monsters):
+    health_length = 40
     combat_monster.border()
     combat_player.border()
     combat_logs.border()
     for number, monster in enumerate(current_monsters):
         combat_monster.addstr(1+5*number, 1, f"{monster.name}   lvl {monster.level}")
         combat_monster.addstr(2+5*number, 1, f"{monster.current_hp} / {monster.stats['max_hp']}")
+        
+        show_remaining_hp = ceil(monster.current_hp / monster.stats['max_hp'] * health_length)
+        combat_monster.addstr(3+5*number,1,"░"*health_length)
+        combat_monster.addstr(3+5*number,1,"█"*show_remaining_hp)
+        
     combat_player.addstr(1, 1, f"{player.name}")
     combat_player.addstr(2, 1, f"{player.current_hp} / {player.max_hp}")
+    
+    show_remaining_hp = ceil(player.current_hp / player.max_hp * health_length)
+    combat_player.addstr(3,1,"░"*health_length)
+    combat_player.addstr(3,1,"█"*show_remaining_hp)
     
     
 def start_combat(navigation_level, player):
