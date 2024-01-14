@@ -38,20 +38,6 @@ def prompt(player,navigation_level):
             print(full_item_print(i))
         print("Total player's defense :",full_stat(player,"defense"))
         print("Close player stats [1] | Inventory [2]")
-
-# Dynamic input function changing with current level
-def lexinput(navigation_level):
-    u=""
-    # Write the current levels
-    for i, v in enumerate(navigation_level):
-        if i == len(navigation_level) - 1:
-            u+= v + ">"
-        else:
-            u+= v + "/"
-    return input(u).lower()
-
-def error(message):
-    print("\n" + Color.SYS_RED + "Lexerror " + Color.SYS_PURPLE + message + "\033[39m")
     
     
     

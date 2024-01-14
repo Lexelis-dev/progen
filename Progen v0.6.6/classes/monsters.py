@@ -16,6 +16,10 @@ class Monster:
         self.gold_drop = (species_info["gold_drop"]
             + self.level*random.randint(*species_info["gold_drop_multiplier"]))
         
+        self.skills = []
+        for i in species_info["skills"]:
+            self.skills.append(MonsterSkill(self.level, species_info["skills"][i]))
+        
         # Set all stats at 0
         self.stats = base_stats.copy()
         
@@ -42,6 +46,11 @@ class Monster:
             
         self.current_hp = self.stats["max_hp"]
         
+class MonsterSkill:
+    def __init__(self, monster_level, attack):
+        self.name = attack["name"]
+        self.damage = attack["damage"] + monster_level*random.randint(*attack["damage_multiplier"])
+        
             
 species = {
     "goblin" : {
@@ -53,6 +62,14 @@ species = {
         "exp_drop_multiplier" : 10,
         "gold_drop" : 10,
         "gold_drop_multiplier" : (5, 7),
+        
+        "skills" : {
+            "stab" : {
+                "name" : "Stab",
+                "damage" : 28,
+                "damage_multiplier" : (4, 7)
+            }
+        },
         
         "stats" : {
             "max_hp" : 20,
@@ -76,6 +93,14 @@ species = {
         "gold_drop" : 2,
         "gold_drop_multiplier" : (3, 5),
         
+        "skills" : {
+            "scream" : {
+                "name" : "Scream",
+                "damage" : 14,
+                "damage_multiplier" : (7, 10)
+            }
+        },
+        
         "stats" : {
             "max_hp" : 20,
             "max_hp_multiplier" : (8, 14),
@@ -98,6 +123,19 @@ species = {
         "gold_drop" : 2,
         "gold_drop_multiplier" : (3, 5),
         
+        "skills" : {
+            "punch" : {
+                "name" : "Punch",
+                "damage" : 30,
+                "damage_multiplier" : (2, 6)
+            },
+            "rock_thow" : {
+                "name" : "Rock Throw",
+                "damage" : 25,
+                "damage_multiplier" : (7, 8)
+            }
+        },
+        
         "stats" : {
             "max_hp" : 20,
             "max_hp_multiplier" : (8, 14),
@@ -115,6 +153,14 @@ species = {
         "exp_drop_multiplier" : 9,
         "gold_drop" : 2,
         "gold_drop_multiplier" : (3, 5),
+        
+        "skills" : {
+            "fire_breath" : {
+                "name" : "Fire Breath",
+                "damage" : 50,
+                "damage_multiplier" : (10, 17)
+            }
+        },
         
         "stats" : {
             "max_hp" : 100,

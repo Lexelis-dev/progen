@@ -20,6 +20,8 @@ class Player:
             "weapon" : None
         }
         
+        self.equipped_skills = [None]*4
+        
         
         
     def equip_item(self,item):
