@@ -1,11 +1,10 @@
 class Player:
-    def __init__(self):
-        ########self.name = input("Enter your name\n")
-        self.name = "Lexelis"
+    def __init__(self, name):
+        self.name = name
         self.color = [207, 133, 214]
         
-        self.max_health = 200
-        self.current_health = self.max_health
+        self.max_hp = 200
+        self.current_hp = self.max_hp
         
         self.exp = 0
         self.level = 1

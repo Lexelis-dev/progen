@@ -1,6 +1,7 @@
 from .shared_functions import item_print, full_stat, character_print
 from classes import Equippable
 
+
 def create_item():
     item = Equippable()
     return item
@@ -11,6 +12,7 @@ def open_chest(window,player,x):
     for _ in range(x):
         item = create_item()
         window.addstr(2+_, 5, f"{item.name}")
+    window.getch()
 
 # Calculate and gives damage to any character
 def receive_damage(character,damage):
