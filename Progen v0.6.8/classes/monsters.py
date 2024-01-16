@@ -22,24 +22,28 @@ class Monster:
         
         # Set all stats at 0
         self.stats = base_stats.copy()
-        
+                
+        # Try to modify all stats
         for stat in base_stats:
             multiplier_key = f"{stat}_multiplier"
-    
-            # The stat is affected by the species, and does not have a maximum
-            if stat in species_info["stats"] and max_stats[stat] == None :
-                self.stats[stat] = (species_info["stats"][stat]
-                    + self.level
-                    *random.randint(*species_info["stats"][multiplier_key]))
-            
-            # The stat is affected by the species, and have a maximum
-            elif stat in species_info["stats"] and max_stats[stat] != None :
-                self.stats[stat] = min(max_stats[stat],
-                    species_info["stats"][stat] 
-                    + round(self.level 
-                        *random.uniform(*species_info["stats"][multiplier_key]),
+
+            # The stat is affected by the species
+            if stat in species_info["stats"]:
+                current_stat = species_info["stats"][stat]
+                current_multipliers = species_info["stats"][multiplier_key]
+                
+                # The stat doesn't have a maximum
+                if max_stats[stat] == None :
+                    self.stats[stat] = (current_stat
+                        + self.level * random.randint(*current_multipliers))
+                    
+                # The stat has a maximum
+                else : 
+                    self.stats[stat] = min(max_stats[stat],
+                        current_stat
+                        +round(self.level * random.uniform(*current_multipliers),
                         1))
-            
+                    
             # The stat stays at 0
             else:
                 pass

@@ -56,6 +56,9 @@ def exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH, key):
             
             # Key is either Enter or Space
             elif key in (32,10):
+                pause_menu.clear()
+                main_win.refresh()
+                pause_menu.refresh()
                 break
     
 def show_pause_menue(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH):

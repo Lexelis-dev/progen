@@ -1,14 +1,14 @@
-"""----------Progen v.0.6.7 documentation----------
+"""----------Progen v.0.6.8 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
 Date: 24/01/14
-Version: 0.6.7
+Version: 0.6.8
 
 Description:
     Show items and monsters, "escape" to quit
         
-Version : 0.6.7
+Version : 0.6.8
 """
 
 #--------------------Import--------------------#
@@ -18,7 +18,7 @@ from curses import wrapper
 from classes import Player, create_skill
 from functions import (
     limited_choices, resize_screen, combat_screen, start_combat, ask_key,
-    create_color, exit_check
+    create_color, exit_check, combat
 )
 #--------------------The main function--------------------#
 def main(stdscr):
@@ -33,12 +33,16 @@ def main(stdscr):
         colors[i] = create_color(*colors[i])
     
     main_win = curses.newwin(GAME_HEIGHT, GAME_WIDTH, 0, 0)
+    
+    pause_menu = curses.newwin(GAME_HEIGHT//2, GAME_WIDTH, 0, 0)
+    
     combat_monster = main_win.subwin(25, 78, 0, 0)
     combat_player = main_win.subwin(25, 78, 25, 0)
     combat_logs = main_win.subwin(45, 42, 5, 78)
     combat_location = main_win.subwin(5, 42, 0, 78)
-    pause_menu = main_win.subwin(GAME_HEIGHT//2, GAME_WIDTH, GAME_HEIGHT//4, 0)
     
+    
+    pause_menu.mvwin(screen_height//2-GAME_HEIGHT//4, screen_width//2-GAME_WIDTH//2)
     main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
     
     current_floor=1
@@ -62,6 +66,22 @@ def main(stdscr):
             combat_screen(main_win, combat_player, combat_monster, combat_logs,
                           combat_location, player, current_monsters,
                           current_floor, current_room, colors)
+            
+            while True:
+                key = ask_key(stdscr, main_win, GAME_HEIGHT, GAME_WIDTH)
+                leave = exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH, key)
+                
+                # Quit the game, whitout saving!
+                if leave == "leave":
+                    break
+                
+                combat(combat_logs, player, current_monsters)
+                main_win.refresh()
+                
+                if player.current_hp == 0 or sum(
+                        monster.current_hp for monster in current_monsters) == 0:
+                    break
+                
         main_win.refresh()
         
         key = ask_key(stdscr, main_win, GAME_HEIGHT, GAME_WIDTH)
@@ -108,3 +128,4 @@ if __name__ == "__main__":
     wrapper(main)
     
 #Todo
+    # Pause menu is glitched
