@@ -18,7 +18,7 @@ class Monster:
         
         self.skills = []
         for i in species_info["skills"]:
-            self.skills.append(MonsterSkill(self.level, species_info["skills"][i]))
+            self.skills.append(MonsterSkill(species_info["skills"][i]))
         
         # Set all stats at 0
         self.stats = base_stats.copy()
@@ -51,10 +51,10 @@ class Monster:
         self.current_hp = self.stats["max_hp"]
         
 class MonsterSkill:
-    def __init__(self, monster_level, attack):
+    def __init__(self, attack):
         self.name = attack["name"]
-        self.damage = attack["damage"] + monster_level*random.randint(*attack["damage_multiplier"])
-        
+        self.damage = attack["damage"]
+        self.damage_multiplier = attack["damage_multiplier"]
             
 species = {
     "goblin" : {
@@ -72,6 +72,11 @@ species = {
                 "name" : "Stab",
                 "damage" : 28,
                 "damage_multiplier" : (4, 7)
+            },
+            "fall" : {
+                "name" : "Fall",
+                "damage" : 2,
+                "damage_multiplier" : (1, 2)
             }
         },
         
@@ -102,6 +107,11 @@ species = {
                 "name" : "Scream",
                 "damage" : 14,
                 "damage_multiplier" : (7, 10)
+            },
+            "haunt" : {
+                "name" : "Haunt",
+                "damage" : 20,
+                "damage_multiplier" : (6, 8)
             }
         },
         
@@ -163,6 +173,11 @@ species = {
                 "name" : "Fire Breath",
                 "damage" : 50,
                 "damage_multiplier" : (10, 17)
+            },
+            "tail_swipe" : {
+                "name" : "Tail Swipe",
+                "damage" : 20,
+                "damage_multiplier" : (2, 10)
             }
         },
         

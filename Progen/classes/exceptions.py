@@ -1,0 +1,2 @@
+class ExitScript(Exception):
+    pass

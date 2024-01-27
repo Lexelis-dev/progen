@@ -3,7 +3,7 @@ class Player:
         self.name = name
         self.color = [812, 522, 839]
         
-        self.max_hp = 200
+        self.max_hp = 200*3
         self.current_hp = self.max_hp
         
         self.exp = 0

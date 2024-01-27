@@ -42,28 +42,3 @@ def prompt(player,navigation_level):
             print(full_item_print(i))
         print("Total player's defense :",full_stat(player,"defense"))
         print("Close player stats [1] | Inventory [2]")
-    
-    
-def exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH, key):
-    # Key is Escape
-    if key == 27:
-        while True:
-            show_pause_menue(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH)
-            main_win.refresh()
-            key = ask_key(stdscr, main_win, GAME_HEIGHT, GAME_WIDTH)
-            if key == 27:
-                return "leave"
-            
-            # Key is either Enter or Space
-            elif key in (32,10):
-                pause_menu.clear()
-                main_win.refresh()
-                pause_menu.refresh()
-                break
-    
-def show_pause_menue(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH):
-    pause_menu.border()
-    message = "Press escape again to leave"
-    pause_menu.addstr(GAME_HEIGHT//4, GAME_WIDTH//2-len(message)//2, message)
-    pause_menu.refresh()
-    main_win.refresh()

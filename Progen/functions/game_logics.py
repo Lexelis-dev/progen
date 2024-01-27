@@ -33,24 +33,25 @@ def player_combat_turn():
 def monster_combat_turn(monster, player):
     if monster.current_hp != 0:
         chosen_skill = random.choice(monster.skills)
-        dealt_damage = chosen_skill.damage
-        log_message = f"{monster.name} uses {chosen_skill.name}\n"
+        dealt_damage = (chosen_skill.damage
+                        + monster.level
+                        *random.randint(*chosen_skill.damage_multiplier))
+        log_message = f" {monster.name} uses {chosen_skill.name}\n"
         
         #Calculate  and get the hurt message
-        log_message += receive_damage(player, dealt_damage)
+        log_message += f" {receive_damage(player, dealt_damage)}"
         return log_message
         
 # Calculate and gives damage to any character
-def receive_damage(character, damage):
+def receive_damage(target, damage):
     
     ############### actual_damage = max (0, damage - full_stat(character,"defense"))
-    actual_damage = max (0, damage - 5)
-    character.current_hp -= actual_damage 
-    return (f"{character.name} receive {actual_damage} damage\n")
+    actual_damage = max (0, damage +  - 5)
+    target.current_hp -= actual_damage 
+    return (f"{target.name} received {actual_damage} damage\n")
     
 def print_logs(combat_logs, message):
-    combat_logs.addstr(1, 1, message)
-    combat_logs.refresh()
+    combat_logs.addstr(1, 0, message)
 
 
 
