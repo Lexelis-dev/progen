@@ -16,7 +16,7 @@ class Equippable:
     
     def set_name(self):
         item_type = random.choice(equippable_types)
-        adjective = random.choice(names["adjective"])
+        adjective = random.choice(equippable_names["adjective"])
         return f"{adjective} {item_type}"
     
     def set_level(self):
@@ -44,7 +44,7 @@ equippable_types = [
     ]
 
 # Will be picked in names
-names = {
+equippable_names = {
     "adjective": [
         "sturdy",
         "beautiful",

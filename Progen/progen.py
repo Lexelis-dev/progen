@@ -1,14 +1,12 @@
-"""----------Progen v.0.6.9 documentation----------
+"""----------Progen v.0.6.10 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
-Date: 24/01/27
-Version: 0.6.9
+Date: 24/01/30
+Version: 0.6.10
 
 Description:
-    Show items and monsters, "escape" to quit
-        
-Version : 0.6.9
+    Get beaten by monsters, "escape" to quit
 """
 
 #--------------------Import--------------------#
@@ -18,7 +16,8 @@ from curses import wrapper
 from classes import Player, create_skill, EngineSettings, ExitScript
 from functions import (
     limited_choices, resize_screen, combat_screen, start_combat, ask_key,
-    create_color, exit_check, combat, show_pause_menu, refresh_main_win
+    create_color, exit_check, combat_turn, show_pause_menu, refresh_main_win,
+    combat
 )
 #--------------------The main function--------------------#
 def main(stdscr):
@@ -65,31 +64,10 @@ def main(stdscr):
                 current_monsters = start_combat(navigation_level, player)
                 
             elif navigation_level[-1] == "combat":
-                
-                combat_screen(main_win, combat_player, combat_monster, combat_logs,
-                              combat_location, player, current_monsters,
-                              current_floor, current_room, colors)
-                
-                while True:
-                    key = ask_key(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH)
-                    exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT,
-                                     GAME_WIDTH, key)
-                    
-                    
-                    combat_screen(main_win, combat_player, combat_monster, combat_logs,
-                                  combat_location, player, current_monsters,
-                                  current_floor, current_room, colors)
-                    
-                    refresh_main_win(stdscr, main_win, GAME_HEIGHT, GAME_WIDTH,
-                                         combat_monster, combat_player,combat_logs,
-                                         combat_location)
-                    
-                    combat(combat_logs, player, current_monsters)
-                    
-                    
-                    if player.current_hp == 0 or sum(
-                            monster.current_hp for monster in current_monsters) == 0:
-                        break
+                combat(stdscr, main_win, combat_player, combat_monster,
+                       combat_logs, combat_location, pause_menu, GAME_HEIGHT,
+                       GAME_WIDTH, player, current_monsters, current_floor,
+                       current_room, colors)
             
             main_win.refresh()
             show_pause_menu(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH)
@@ -139,5 +117,10 @@ if __name__ == "__main__":
     wrapper(main)
     
 #Todo
-    # Pause menu is glitched
-    # Leave with a exception
+    # Combat ends after deaths
+    # Use defense in attack
+    # Player can attack
+    # Player get random skills
+    # Show skill info
+    # Start of game
+    # Save and load?
