@@ -3,6 +3,7 @@ import random
 from .shared_functions import item_print, full_stat, character_print
 from classes import Equippable
 from .curses_functions import combat_screen, refresh_main_win, ask_key, exit_check
+from constants import equippable_types, equippable_names
 
 
 def create_item():
@@ -17,8 +18,11 @@ def open_chest(window,player,x):
         window.addstr(2+_, 5, f"{item.name}")
     window.getch()
     
-def starter_equipments(player, equipment_type):
-    pass
+def starter_equipments(player):
+    for eq_type in equippable_types:
+        item_name = f"starter {eq_type}"
+        item = Equippable("white", eq_type, item_name, 1)
+        player.equipped_items[eq_type] = item
     
     
 def combat(stdscr, main_win, combat_player, combat_monster, combat_logs,
@@ -80,7 +84,7 @@ def monster_combat_turn(monster, player):
 def receive_damage(target, damage):
     
     ############### actual_damage = max (0, damage - full_stat(character,"defense"))
-    actual_damage = max (0, damage +  - 5)
+    actual_damage = max (0, damage - full_stat(target,"defense"))
     target.current_hp -= actual_damage 
     return (f"{target.name} received {actual_damage} damage\n")
     

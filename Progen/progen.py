@@ -1,9 +1,9 @@
-"""----------Progen v.0.6.10 documentation----------
+"""----------Progen v.0.6.11 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
 Date: 24/01/30
-Version: 0.6.10
+Version: 0.6.11
 
 Description:
     Get beaten by monsters, "escape" to quit
@@ -17,7 +17,7 @@ from classes import Player, create_skill, EngineSettings, ExitScript
 from functions import (
     limited_choices, resize_screen, combat_screen, start_combat, ask_key,
     create_color, exit_check, combat_turn, show_pause_menu, refresh_main_win,
-    combat
+    combat, starter_equipments
 )
 #--------------------The main function--------------------#
 def main(stdscr):
@@ -52,6 +52,8 @@ def main(stdscr):
     
     for i, j in enumerate(player.equipped_skills):
         player.equipped_skills[i] = create_skill(1)
+        
+    starter_equipments(player)
     
     stdscr.nodelay(True)
     

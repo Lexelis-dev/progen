@@ -4,7 +4,10 @@ from constants import Color
         
 # Return the total stats of the player from their gears
 def full_stat(player,stat_type):
-    return sum(item.stats[stat_type] for item in player.equipped_items)
+    all_stat=[]
+    for item in player.equipped_items.values():
+        all_stat.append(item.stats[stat_type])
+    return sum(all_stat)
 
 # Return a simple colored string with the item symbol and name
 def item_print(stdscr,x,y,item):
