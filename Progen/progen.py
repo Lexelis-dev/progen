@@ -1,9 +1,9 @@
-"""----------Progen v.0.6.11 documentation----------
+"""----------Progen v.0.6.12 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
-Date: 24/01/30
-Version: 0.6.11
+Date: 24/02/05
+Version: 0.6.12
 
 Description:
     Get beaten by monsters, "escape" to quit

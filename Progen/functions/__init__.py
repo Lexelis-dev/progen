@@ -1,6 +1,9 @@
 from .helpers import limited_choices
-from .game_logics import open_chest, combat_turn, combat, starter_equipments
+from .game_logics import open_chest, starter_equipments
 from .curses_functions import (
-    resize_screen, combat_screen, start_combat, ask_key, create_color,
+    resize_screen, ask_key, create_color,
     exit_check, show_pause_menu, refresh_main_win
+)
+from .combat_logics import (
+    combat, start_combat, combat_turn, combat_screen
 )
