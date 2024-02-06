@@ -5,6 +5,34 @@ from .curses_functions import refresh_main_win, ask_key, exit_check
 from .shared_functions import full_stat
 from classes import spawn_monster
 
+"""
+What to do during a fight
+
+easy version
+
+let player attack
+let monster attack      v
+
+
+
+advanced version
+
+let player attack
+poison player
+
+let monster attack
+poison monster
+
+
+even more advanced
+
+player attack
+end player turn buffs and debuffs
+
+monster attack
+end monster turn buffs and debuffs
+"""
+
 def start_combat(navigation_level, player):
     navigation_level.append("combat")
     current_monsters = []

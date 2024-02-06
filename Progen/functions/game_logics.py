@@ -25,30 +25,3 @@ def starter_equipments(player):
 
 
 
-"""
-What to do during a fight
-
-easy version
-
-let player attack
-let monster attack
-
-
-
-advanced version
-
-let player attack
-poison player
-
-let monster attack
-poison monster
-
-
-even more advanced
-
-player attack
-end player turn buffs and debuffs
-
-monster attack
-end monster turn buffs and debuffs
-"""

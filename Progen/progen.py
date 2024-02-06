@@ -1,9 +1,9 @@
-"""----------Progen v.0.6.12 documentation----------
+"""----------Progen v.0.6.13 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
-Date: 24/02/05
-Version: 0.6.12
+Date: 24/02/06
+Version: 0.6.13
 
 Description:
     Get beaten by monsters, "escape" to quit
@@ -118,7 +118,7 @@ colors = {
 if __name__ == "__main__":
     wrapper(main)
     
-#Todo
+#TODO
     # Combat ends after deaths
     # Use defense in attack
     # Player can attack

@@ -219,7 +219,6 @@ max_stats = {
    "fer" : None,
    "vamp" : None 
 }
-
 def spawn_monster(player_level):
     
     species_names = tuple(species)
