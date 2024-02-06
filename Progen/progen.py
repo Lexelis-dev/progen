@@ -1,9 +1,9 @@
-"""----------Progen v.0.6.13 documentation----------
+"""----------Progen v.0.6.14 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
 Date: 24/02/06
-Version: 0.6.13
+Version: 0.6.14
 
 Description:
     Get beaten by monsters, "escape" to quit
@@ -13,16 +13,19 @@ Description:
 import curses
 from curses import wrapper
 
-from classes import Player, create_skill, EngineSettings, ExitScript
+from classes import Player, ExitScript, EngineConstants
 from functions import (
     limited_choices, resize_screen, combat_screen, start_combat, ask_key,
     create_color, exit_check, combat_turn, show_pause_menu, refresh_main_win,
-    combat, starter_equipments
+    combat, starter_equipments, starter_skills
 )
 #--------------------The main function--------------------#
 def main(stdscr):
+    EngineConstants.stdscr = stdscr
     # Initialisation
     curses.curs_set(0)  # Hide the cursor
+    
+    # TODO delete to move to class
     GAME_HEIGHT, GAME_WIDTH = 50, 120  # The default game size
     
     curses.resize_term(GAME_HEIGHT+5, GAME_WIDTH+14)
@@ -40,6 +43,14 @@ def main(stdscr):
     combat_logs = main_win.subwin(45, 42, 5, 78)
     combat_location = main_win.subwin(5, 42, 0, 78)
     
+    EngineConstants.main_win = main_win
+    EngineConstants.pause_menu = pause_menu
+    
+    EngineConstants.combat_monster = combat_monster
+    EngineConstants.combat_player = combat_player
+    EngineConstants.combat_logs = combat_logs
+    EngineConstants.combat_location = combat_location
+    
     
     pause_menu.mvwin(screen_height//2-GAME_HEIGHT//4, screen_width//2-GAME_WIDTH//2)
     main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
@@ -47,13 +58,11 @@ def main(stdscr):
     current_floor=1
     current_room=1
     navigation_level = ["progen"]
-    player = Player("Lexelis")
+    player = Player("Lexelis") #TODO select name
     colors["player_color"] = create_color(*player.color)
-    
-    for i, j in enumerate(player.equipped_skills):
-        player.equipped_skills[i] = create_skill(1)
         
     starter_equipments(player)
+    starter_skills(player)
     
     stdscr.nodelay(True)
     
@@ -66,18 +75,14 @@ def main(stdscr):
                 current_monsters = start_combat(navigation_level, player)
                 
             elif navigation_level[-1] == "combat":
-                combat(stdscr, main_win, combat_player, combat_monster,
-                       combat_logs, combat_location, pause_menu, GAME_HEIGHT,
-                       GAME_WIDTH, player, current_monsters, current_floor,
+                combat(player, current_monsters, current_floor,
                        current_room, colors)
             
             main_win.refresh()
-            show_pause_menu(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH)
+            show_pause_menu()
             
-            key = ask_key(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH)
-            # leave = exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT, GAME_WIDTH, key)
-            exit_check(stdscr, main_win, pause_menu, GAME_HEIGHT,
-                             GAME_WIDTH, key)
+            key = ask_key()
+            exit_check(key)
             
             """"""""""if ans == "close":
                 if navigation_level[-1] in end_correct:
@@ -122,7 +127,7 @@ if __name__ == "__main__":
     # Combat ends after deaths
     # Use defense in attack
     # Player can attack
-    # Player get random skills
     # Show skill info
     # Start of game
     # Save and load?
+    # Have less variables, externalise the values (in packages)

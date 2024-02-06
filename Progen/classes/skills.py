@@ -29,10 +29,6 @@ class Skill:
                            + self.level*random.randint(*damage_multiplier))
             if attack_stats["side_effect"] == None :
                 pass #TODO
-        
-    def set_rarity(self):
-        return random.choices(["white","green","blue","purple","yellow"],
-                              weights=[0.6, 0.3, 0.2, 0.01, 0.001], k=1)[0]
     
 skill_list = {
 #--------------------------Rarity white--------------------------
@@ -71,7 +67,7 @@ skill_list = {
         "slash" : {
             "name" : "Slash",
             "skill_type" : "attack",
-            "damage_type" : "pierce",
+            "damage_type" : "piercing",
             "target" : "single",
             "attack" : {
                 "precision" : 1,
@@ -87,6 +83,21 @@ skill_list = {
             "name" : "Dark Bolt",
             "skill_type" : "attack",
             "damage_type" : "dark",
+            "target" : "single",
+            "attack" : {
+                "precision" : 1,
+                "damage" : 8,
+                "damage_multiplier" : (1, 3),
+                "side_effect" : None
+            },
+            "effect" : None,
+            "heal" : None
+        },
+        
+        "sharp_claws" : {
+            "name" : "Sharp Claws",
+            "skill_type" : "attack",
+            "damage_type" : "piercing",
             "target" : "single",
             "attack" : {
                 "precision" : 1,
@@ -120,6 +131,3 @@ skill_list = {
 #--------------------------Rarity purple--------------------------
 #--------------------------Rarity yellow--------------------------
 }
-
-def create_skill(player_level):
-    return Skill(player_level)
