@@ -3,7 +3,7 @@ from math import ceil
 
 from .curses_functions import refresh_main_win, ask_key, exit_check
 from .shared_functions import full_stat
-from classes import spawn_monster, EngineConstants
+from classes import spawn_monster, EngineConstants, EngineSettings
 
 """
 What to do during a fight
@@ -33,8 +33,8 @@ monster attack
 end monster turn buffs and debuffs
 """
 
-def start_combat(navigation_level, player):
-    navigation_level.append("combat")
+def start_combat(player):
+    EngineSettings.game_nav = "combat"
     current_monsters = []
     for i in range(2):
         monster = spawn_monster(player.level)
@@ -45,32 +45,46 @@ def combat(player, current_monsters, current_floor, current_room, colors):
     
     combat_screen(player, current_monsters, current_floor, current_room, colors)
     
-    while True:
-        key = ask_key()
-        exit_check(key)
-        
+    while EngineSettings.game_nav == "combat":
         combat_screen(player, current_monsters, current_floor, current_room, colors)
         refresh_main_win()
         combat_turn(player, current_monsters)
         
-        
-        if player.current_hp == 0 or sum(
-                monster.current_hp for monster in current_monsters) == 0:
-            break
+        if player.current_hp <= 0 or sum(
+                monster.current_hp for monster in current_monsters) <= 0:
+            EngineSettings.game_nav = "room_transition"
 
 def combat_turn(player, current_monsters):
-    player_combat_turn()
     
-    log_message=""
-    for i in current_monsters:
-        new_message = monster_combat_turn(i, player)
-        log_message += new_message
+    
+    log_message= player_combat_turn(player, current_monsters)
+    for entity in current_monsters:
+        if entity.current_hp > 0:
+            new_message = monster_combat_turn(entity, player)
+            log_message += new_message
     print_logs(log_message)
             
     
     
-def player_combat_turn():
-    pass
+def player_combat_turn(player, current_monsters):
+    while True:
+        key = ask_key()
+        exit_check(key)
+        if key in (49, 50, 51, 52): # 1, 2, 3, 4
+            break
+    chosen_skill = player.equipped_skills[key-49]
+    dealt_damage = chosen_skill.damage
+    
+    while True:
+        key = ask_key()
+        exit_check(key)
+        if key in (range(len(current_monsters)+49)): # 1, 2, etc.
+            break
+    target = current_monsters[key-49]
+    damage_received = receive_damage(target, dealt_damage)
+    log_message = (f" {player.name} uses {chosen_skill.name}\n"
+                    f" {damage_received}\n")
+    return log_message
 
 def monster_combat_turn(monster, player):
     if monster.current_hp != 0:
@@ -78,19 +92,29 @@ def monster_combat_turn(monster, player):
         dealt_damage = (chosen_skill.damage
                         + monster.level
                         *random.randint(*chosen_skill.damage_multiplier))
-        log_message = f" {monster.name} uses {chosen_skill.name}\n"
         
         #Calculate  and get the hurt message
-        log_message += f" {receive_damage(player, dealt_damage)}"
+        damage_received = receive_damage(player, dealt_damage)
+        log_message = f" {monster.name} uses {chosen_skill.name}\n"
+        log_message += f" {damage_received}"
         return log_message
         
 # Calculate and gives damage to any character
 def receive_damage(target, damage):
-    actual_damage = max (0, damage - full_stat(target,"defense"))
-    target.current_hp -= actual_damage 
+    try :
+        actual_damage = max(0, damage - full_stat(target,"defense"))
+        # If damage exceed target health
+        actual_damage = min(actual_damage, target.current_hp - actual_damage)
+        
+    except AttributeError:
+        actual_damage = max(0, damage - target.stats["res_add"])
+        # If damage exceed target health
+        actual_damage = min(actual_damage, target.current_hp)
+    target.current_hp -= actual_damage
     return (f"{target.name} received {actual_damage} damage\n")
     
 def print_logs(message):
+    EngineConstants.combat_logs.clear()
     EngineConstants.combat_logs.addstr(1, 0, message)
     
 def combat_screen(player, current_monsters,
@@ -111,7 +135,7 @@ def combat_screen(player, current_monsters,
     # Show the monsters
     for number, monster in enumerate(current_monsters):
         EngineConstants.combat_monster.addstr(1+5*number, 1,
-                              f"{monster.name}   lvl {monster.level}")
+                              f"[{number+1}] {monster.name}   lvl {monster.level}")
         EngineConstants.combat_monster.addstr(2+5*number, 1,
                               f"{monster.current_hp} / {monster.stats['max_hp']}")
         
@@ -133,5 +157,5 @@ def combat_screen(player, current_monsters,
     # Show the player's skills
     skill_offset = 0
     for i, skill in enumerate(player.equipped_skills):
-        EngineConstants.combat_player.addstr(5, 1+skill_offset, f"[{i}] {skill.name} | ")
-        skill_offset += len(f"[{i}] {skill.name} | ")
+        EngineConstants.combat_player.addstr(5, 1+skill_offset, f"[{i+1}] {skill.name} | ")
+        skill_offset += len(f"[{i+1}] {skill.name} | ")

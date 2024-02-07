@@ -41,8 +41,8 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 7,
-                "damage_multiplier" : (1, 3),
+                "damage" : 15,
+                "damage_multiplier" : (3, 6),
                 "side_effect" : None
             },
             "effect" : None,
@@ -56,8 +56,8 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 6,
-                "damage_multiplier" : (2, 5),
+                "damage" : 23,
+                "damage_multiplier" : (1, 3),
                 "side_effect" : None
             },
             "effect" : None,
@@ -71,8 +71,8 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 9,
-                "damage_multiplier" : (1, 2),
+                "damage" : 14,
+                "damage_multiplier" : (3, 5),
                 "side_effect" : None
             },
             "effect" : None,
@@ -86,8 +86,8 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 8,
-                "damage_multiplier" : (1, 3),
+                "damage" : 10,
+                "damage_multiplier" : (5, 9),
                 "side_effect" : None
             },
             "effect" : None,
@@ -101,8 +101,8 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 8,
-                "damage_multiplier" : (1, 3),
+                "damage" : 30,
+                "damage_multiplier" : (1, 2),
                 "side_effect" : None
             },
             "effect" : None,

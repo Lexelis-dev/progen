@@ -1,9 +1,9 @@
-"""----------Progen v.0.6.14 documentation----------
+"""----------Progen v.0.7.0 documentation----------
 Progen - Roguelite RPG
 
 Author: Lexelis
-Date: 24/02/06
-Version: 0.6.14
+Date: 24/02/07
+Version: 0.7.0
 
 Description:
     Get beaten by monsters, "escape" to quit
@@ -13,10 +13,10 @@ Description:
 import curses
 from curses import wrapper
 
-from classes import Player, ExitScript, EngineConstants
+from classes import Player, ExitScript, EngineConstants,EngineSettings
 from functions import (
-    limited_choices, resize_screen, combat_screen, start_combat, ask_key,
-    create_color, exit_check, combat_turn, show_pause_menu, refresh_main_win,
+    start_combat, ask_key,
+    create_color, exit_check, show_pause_menu,
     combat, starter_equipments, starter_skills
 )
 #--------------------The main function--------------------#
@@ -35,7 +35,6 @@ def main(stdscr):
         colors[i] = create_color(*colors[i])
     
     main_win = curses.newwin(GAME_HEIGHT, GAME_WIDTH, 0, 0)
-    
     pause_menu = curses.newwin(GAME_HEIGHT//2, GAME_WIDTH, GAME_HEIGHT//4, 0)
     
     combat_monster = main_win.subwin(25, 78, 0, 0)
@@ -57,7 +56,6 @@ def main(stdscr):
     
     current_floor=1
     current_room=1
-    navigation_level = ["progen"]
     player = Player("Lexelis") #TODO select name
     colors["player_color"] = create_color(*player.color)
         
@@ -71,10 +69,10 @@ def main(stdscr):
             main_win.clear()
             main_win.border()
             
-            if navigation_level[-1] == "progen":
-                current_monsters = start_combat(navigation_level, player)
+            if EngineSettings.game_nav == "progen":
+                current_monsters = start_combat(player)
                 
-            elif navigation_level[-1] == "combat":
+            elif EngineSettings.game_nav == "combat":
                 combat(player, current_monsters, current_floor,
                        current_room, colors)
             

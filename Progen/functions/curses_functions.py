@@ -75,6 +75,7 @@ def exit_check(key):
             
 def show_pause_menu():
     if EngineSettings.paused == True:
+        resize_screen(EngineConstants.pause_menu, EngineConstants.GAME_HEIGHT//2, EngineConstants.GAME_WIDTH)
         EngineConstants.pause_menu.border()
         message = "Press escape again to leave"
         EngineConstants.pause_menu.addstr(EngineConstants.GAME_HEIGHT//4,
