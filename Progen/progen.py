@@ -93,7 +93,7 @@ def main(stdscr):
                     
                 #The player opens a menue
                 else:
-                    navigation_level.append(ans)"""""""""
+                    navigation_level.append(ans)""""""""" # TODO
     
     try:
         inner_main()

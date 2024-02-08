@@ -31,7 +31,7 @@ end player turn buffs and debuffs
 
 monster attack
 end monster turn buffs and debuffs
-"""
+""" # TODO
 
 def start_combat(player):
     EngineSettings.game_nav = "combat"
@@ -67,24 +67,27 @@ def combat_turn(player, current_monsters):
     
     
 def player_combat_turn(player, current_monsters):
-    while True:
-        key = ask_key()
-        exit_check(key)
-        if key in (49, 50, 51, 52): # 1, 2, 3, 4
-            break
-    chosen_skill = player.equipped_skills[key-49]
-    dealt_damage = chosen_skill.damage
+    while True :
+        while True: # Choose skill
+            key = ask_key()
+            exit_check(key)
+            if key in (49, 50, 51, 52): # 1, 2, 3, 4
+                chosen_skill = player.equipped_skills[key - 49]
+                dealt_damage = chosen_skill.damage
+                break
     
-    while True:
-        key = ask_key()
-        exit_check(key)
-        if key in (range(len(current_monsters)+49)): # 1, 2, etc.
-            break
-    target = current_monsters[key-49]
-    damage_received = receive_damage(target, dealt_damage)
-    log_message = (f" {player.name} uses {chosen_skill.name}\n"
-                    f" {damage_received}\n")
-    return log_message
+        while True: # Choose target or cancel
+            key = ask_key()
+            exit_check(key)
+            if key in range(49, 49 + len(current_monsters)): # 1, 2, etc.
+                target = current_monsters[key - 49]
+                damage_received = receive_damage(target, dealt_damage)
+                log_message = (f" {player.name} uses {chosen_skill.name}\n"
+                                f" {damage_received}\n")
+                return log_message
+            
+            elif key == 8: # Cancel selection with backspace
+                break
 
 def monster_combat_turn(monster, player):
     if monster.current_hp != 0:
@@ -139,7 +142,8 @@ def combat_screen(player, current_monsters,
         EngineConstants.combat_monster.addstr(2+5*number, 1,
                               f"{monster.current_hp} / {monster.stats['max_hp']}")
         
-        show_remaining_hp = ceil(monster.current_hp / monster.stats['max_hp'] * health_length)
+        show_remaining_hp = ceil(monster.current_hp / monster.stats['max_hp']
+                                 * health_length)
         EngineConstants.combat_monster.addstr(3+5*number, 1, "░"*health_length)
         EngineConstants.combat_monster.addstr(3+5*number, 1, "█"*show_remaining_hp)
         
