@@ -30,3 +30,12 @@ def starter_skills(player):
         for i, j in enumerate(player.equipped_skills):
             new_skill = Skill(1, "white")
             player.equipped_skills[i] = new_skill
+            
+def generate_room(number):
+    rooms = []
+    while len(rooms) != number:
+        new_room = random.choices(["combat","shop","campfire"],
+                              weights=[0.85,0.075,0.075], k=1)[0]
+        if new_room == "combat" or (new_room != "combat" and new_room not in rooms):
+            rooms.append(new_room)
+    return rooms

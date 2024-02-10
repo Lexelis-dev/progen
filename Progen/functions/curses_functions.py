@@ -1,6 +1,7 @@
 import curses
 
 from classes import EngineSettings, ExitScript, EngineConstants
+from .game_logics import generate_room
 
 def ask_key():
     while True:
@@ -67,7 +68,7 @@ def exit_check(key):
             
             # Key is either Enter or Space
             elif key in (32,10):
-                EngineSettings.paused = False
+                EngineSettings.paused = False 
                 EngineConstants.pause_menu.clear()
                 EngineConstants.pause_menu.refresh()
                 EngineConstants.main_win.refresh()
@@ -86,3 +87,26 @@ def show_pause_menu():
         EngineConstants.main_win.refresh()
     else:
         EngineConstants.pause_menu.clear()
+        
+def show_game_over():
+    EngineConstants.main_win.clear()
+    message = "Oww you dead :c"
+    EngineConstants.main_win.addstr(EngineConstants.GAME_HEIGHT//2,
+                        EngineConstants.GAME_WIDTH//2-len(message)//2,
+                        message)
+                        
+    EngineConstants.main_win.refresh()
+    show_pause_menu() 
+    
+def show_room_transition():
+    if ((EngineSettings.current_room+1) %5) != 0:
+        rooms = generate_room(2)
+        EngineConstants.main_win.clear()
+        EngineConstants.room_transition_location.border()
+        EngineConstants.room_transition_room_1.border()
+        EngineConstants.room_transition_room_2.border()
+        # TODO create a function to automatically put a message in the middle
+        EngineConstants.room_transition_location.addstr(2, 1, f"Current floor : {EngineSettings.current_floor}")
+        EngineConstants.room_transition_location.addstr(3, 1, f"Current room : {EngineSettings.current_room}")
+        
+        refresh_main_win()

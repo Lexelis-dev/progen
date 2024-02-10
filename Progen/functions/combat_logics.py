@@ -8,9 +8,9 @@ from classes import spawn_monster, EngineConstants, EngineSettings
 """
 What to do during a fight
 
-easy version
+easy version            vvv
 
-let player attack
+let player attack       v
 let monster attack      v
 
 
@@ -41,18 +41,21 @@ def start_combat(player):
         current_monsters.append(monster)
     return current_monsters
 
-def combat(player, current_monsters, current_floor, current_room, colors):
+def combat(player, current_monsters, colors):
     
-    combat_screen(player, current_monsters, current_floor, current_room, colors)
+    combat_screen(player, current_monsters, colors)
     
     while EngineSettings.game_nav == "combat":
-        combat_screen(player, current_monsters, current_floor, current_room, colors)
+        combat_screen(player, current_monsters, colors)
         refresh_main_win()
         combat_turn(player, current_monsters)
         
-        if player.current_hp <= 0 or sum(
-                monster.current_hp for monster in current_monsters) <= 0:
+        if player.current_hp <= 0:
+            EngineSettings.game_nav = "game_over"
+        elif sum(monster.current_hp for monster in current_monsters) <= 0:
             EngineSettings.game_nav = "room_transition"
+            
+    EngineSettings.skip_next_input = True
 
 def combat_turn(player, current_monsters):
     
@@ -75,7 +78,8 @@ def player_combat_turn(player, current_monsters):
                 chosen_skill = player.equipped_skills[key - 49]
                 dealt_damage = chosen_skill.damage
                 break
-    
+    # TODO tell the player they can cancel
+    # TODO shows selected skill
         while True: # Choose target or cancel
             key = ask_key()
             exit_check(key)
@@ -107,7 +111,7 @@ def receive_damage(target, damage):
     try :
         actual_damage = max(0, damage - full_stat(target,"defense"))
         # If damage exceed target health
-        actual_damage = min(actual_damage, target.current_hp - actual_damage)
+        actual_damage = min(actual_damage, target.current_hp)
         
     except AttributeError:
         actual_damage = max(0, damage - target.stats["res_add"])
@@ -120,8 +124,7 @@ def print_logs(message):
     EngineConstants.combat_logs.clear()
     EngineConstants.combat_logs.addstr(1, 0, message)
     
-def combat_screen(player, current_monsters,
-                  current_floor, current_room, colors):
+def combat_screen(player, current_monsters, colors):
     health_length = 60
     EngineConstants.combat_monster.clear()
     EngineConstants.combat_player.clear()
@@ -132,8 +135,8 @@ def combat_screen(player, current_monsters,
     EngineConstants.combat_location.border()
     
     # Show the current location
-    EngineConstants.combat_location.addstr(1, 1, f"Current floor : {current_floor}")
-    EngineConstants.combat_location.addstr(3, 1, f"Current room : {current_room}")
+    EngineConstants.combat_location.addstr(1, 1, f"Current floor : {EngineSettings.current_floor}")
+    EngineConstants.combat_location.addstr(3, 1, f"Current room : {EngineSettings.current_room}")
     
     # Show the monsters
     for number, monster in enumerate(current_monsters):

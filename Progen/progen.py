@@ -1,12 +1,12 @@
-"""----------Progen v.0.7.0 documentation----------
+"""----------Progen v.0.7.3 documentation----------
 Progen - Roguelite RPG
 
-Author: Lexelis
-Date: 24/02/07
-Version: 0.7.0
+Authors: Lexelis
+Date: 24/02/010
+Version: 0.7.3
 
 Description:
-    Get beaten by monsters, "escape" to quit
+    Fight monsters, "escape" to quit
 """
 
 #--------------------Import--------------------#
@@ -17,7 +17,8 @@ from classes import Player, ExitScript, EngineConstants,EngineSettings
 from functions import (
     start_combat, ask_key,
     create_color, exit_check, show_pause_menu,
-    combat, starter_equipments, starter_skills
+    combat, starter_equipments, starter_skills, show_game_over,
+    show_room_transition
 )
 #--------------------The main function--------------------#
 def main(stdscr):
@@ -26,7 +27,7 @@ def main(stdscr):
     curses.curs_set(0)  # Hide the cursor
     
     # TODO delete to move to class
-    GAME_HEIGHT, GAME_WIDTH = 50, 120  # The default game size
+    GAME_HEIGHT, GAME_WIDTH = 50, 120  # The default game size # TODO
     
     curses.resize_term(GAME_HEIGHT+5, GAME_WIDTH+14)
     screen_height, screen_width = stdscr.getmaxyx()
@@ -42,6 +43,12 @@ def main(stdscr):
     combat_logs = main_win.subwin(45, 42, 5, 78)
     combat_location = main_win.subwin(5, 42, 0, 78)
     
+    room_transition_location = main_win.subwin(6, EngineConstants.GAME_WIDTH, 0, 0)
+    room_transition_room_1 = main_win.subwin(EngineConstants.GAME_HEIGHT-6,
+                                             EngineConstants.GAME_WIDTH//2, 6, 0)
+    room_transition_room_2 = main_win.subwin(EngineConstants.GAME_HEIGHT-6,
+                                             EngineConstants.GAME_WIDTH//2, 6, EngineConstants.GAME_WIDTH//2)
+    
     EngineConstants.main_win = main_win
     EngineConstants.pause_menu = pause_menu
     
@@ -51,11 +58,15 @@ def main(stdscr):
     EngineConstants.combat_location = combat_location
     
     
-    pause_menu.mvwin(screen_height//2-GAME_HEIGHT//4, screen_width//2-GAME_WIDTH//2)
-    main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
+    EngineConstants.pause_menu.mvwin(screen_height//2-GAME_HEIGHT//4, screen_width//2-GAME_WIDTH//2)
+    EngineConstants.main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
     
-    current_floor=1
-    current_room=1
+    EngineConstants.room_transition_location = room_transition_location
+    EngineConstants.room_transition_room_1 = room_transition_room_1
+    EngineConstants.room_transition_room_2 = room_transition_room_2
+    
+    EngineSettings.current_floor=1
+    EngineSettings.current_room=1
     player = Player("Lexelis") #TODO select name
     colors["player_color"] = create_color(*player.color)
         
@@ -66,21 +77,32 @@ def main(stdscr):
     
     def inner_main():
         while True:
-            main_win.clear()
-            main_win.border()
+            EngineConstants.main_win.clear()
+            EngineConstants.main_win.border()
+        
+            EngineConstants.main_win.refresh()
+            show_pause_menu() 
             
             if EngineSettings.game_nav == "progen":
                 current_monsters = start_combat(player)
                 
             elif EngineSettings.game_nav == "combat":
-                combat(player, current_monsters, current_floor,
-                       current_room, colors)
+                combat(player, current_monsters, colors)
+                
+            elif EngineSettings.game_nav == "game_over":
+                show_game_over()
+                
+            elif EngineSettings.game_nav == "room_transition":
+                show_room_transition()
+                
+                
+            if not EngineSettings.skip_next_input:
+                key = ask_key()
+                exit_check(key)
             
-            main_win.refresh()
-            show_pause_menu()
-            
-            key = ask_key()
-            exit_check(key)
+            else:
+                EngineSettings.skip_next_input = False # TODO turn this into a function
+                
             
             """"""""""if ans == "close":
                 if navigation_level[-1] in end_correct:
@@ -122,10 +144,8 @@ if __name__ == "__main__":
     wrapper(main)
     
 #TODO
-    # Combat ends after deaths
-    # Use defense in attack
-    # Player can attack
     # Show skill info
     # Start of game
     # Save and load?
+    # Room transition
     # Have less variables, externalise the values (in packages)

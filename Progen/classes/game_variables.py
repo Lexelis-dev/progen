@@ -5,5 +5,7 @@ class EngineConstants():
 class EngineSettings():
     paused = False
     closing_game = False
+    skip_next_input = False
     game_nav = "progen"
-        # All possible values : progen, combat, room_transition
+        # All possible values : progen, combat,
+            # room_transition, game_over, shop, campfire
