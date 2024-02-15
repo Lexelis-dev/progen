@@ -34,7 +34,6 @@ end monster turn buffs and debuffs
 """ # TODO
 
 def start_combat(player):
-    EngineSettings.game_nav = "combat"
     current_monsters = []
     for i in range(2):
         monster = spawn_monster(player.level)
@@ -55,7 +54,7 @@ def combat(player, current_monsters, colors):
         elif sum(monster.current_hp for monster in current_monsters) <= 0:
             EngineSettings.game_nav = "room_transition"
             
-    EngineSettings.skip_next_input = True
+    EngineSettings.skip_next_input = True # TODO turn this into a function
 
 def combat_turn(player, current_monsters):
     
@@ -73,7 +72,7 @@ def player_combat_turn(player, current_monsters):
     while True :
         while True: # Choose skill
             key = ask_key()
-            exit_check(key)
+            exit_check(key) # TODO fuse these two functions
             if key in (49, 50, 51, 52): # 1, 2, 3, 4
                 chosen_skill = player.equipped_skills[key - 49]
                 dealt_damage = chosen_skill.damage
@@ -82,7 +81,7 @@ def player_combat_turn(player, current_monsters):
     # TODO shows selected skill
         while True: # Choose target or cancel
             key = ask_key()
-            exit_check(key)
+            exit_check(key) # TODO fuse these two functions
             if key in range(49, 49 + len(current_monsters)): # 1, 2, etc.
                 target = current_monsters[key - 49]
                 damage_received = receive_damage(target, dealt_damage)

@@ -1,9 +1,9 @@
-"""----------Progen v.0.7.3 documentation----------
+"""----------Progen v0.7.4 documentation----------
 Progen - Roguelite RPG
 
 Authors: Lexelis
-Date: 24/02/010
-Version: 0.7.3
+Date: 24/02/15
+Version: 0.7.4
 
 Description:
     Fight monsters, "escape" to quit
@@ -26,17 +26,14 @@ def main(stdscr):
     # Initialisation
     curses.curs_set(0)  # Hide the cursor
     
-    # TODO delete to move to class
-    GAME_HEIGHT, GAME_WIDTH = 50, 120  # The default game size # TODO
-    
-    curses.resize_term(GAME_HEIGHT+5, GAME_WIDTH+14)
+    curses.resize_term(EngineConstants.GAME_HEIGHT+5, EngineConstants.GAME_WIDTH+14)
     screen_height, screen_width = stdscr.getmaxyx()
     
     for i in colors:
         colors[i] = create_color(*colors[i])
     
-    main_win = curses.newwin(GAME_HEIGHT, GAME_WIDTH, 0, 0)
-    pause_menu = curses.newwin(GAME_HEIGHT//2, GAME_WIDTH, GAME_HEIGHT//4, 0)
+    main_win = curses.newwin(EngineConstants.GAME_HEIGHT, EngineConstants.GAME_WIDTH, 0, 0)
+    pause_menu = curses.newwin(EngineConstants.GAME_HEIGHT//2, EngineConstants.GAME_WIDTH, EngineConstants.GAME_HEIGHT//4, 0)
     
     combat_monster = main_win.subwin(25, 78, 0, 0)
     combat_player = main_win.subwin(25, 78, 25, 0)
@@ -58,8 +55,8 @@ def main(stdscr):
     EngineConstants.combat_location = combat_location
     
     
-    EngineConstants.pause_menu.mvwin(screen_height//2-GAME_HEIGHT//4, screen_width//2-GAME_WIDTH//2)
-    EngineConstants.main_win.mvwin(screen_height//2-GAME_HEIGHT//2, screen_width//2-GAME_WIDTH//2)
+    EngineConstants.pause_menu.mvwin(screen_height//2-EngineConstants.GAME_HEIGHT//4, screen_width//2-EngineConstants.GAME_WIDTH//2)
+    EngineConstants.main_win.mvwin(screen_height//2-EngineConstants.GAME_HEIGHT//2, screen_width//2-EngineConstants.GAME_WIDTH//2)
     
     EngineConstants.room_transition_location = room_transition_location
     EngineConstants.room_transition_room_1 = room_transition_room_1
@@ -84,9 +81,10 @@ def main(stdscr):
             show_pause_menu() 
             
             if EngineSettings.game_nav == "progen":
-                current_monsters = start_combat(player)
+                EngineSettings.game_nav = "combat"
                 
             elif EngineSettings.game_nav == "combat":
+                current_monsters = start_combat(player)
                 combat(player, current_monsters, colors)
                 
             elif EngineSettings.game_nav == "game_over":
@@ -98,24 +96,10 @@ def main(stdscr):
                 
             if not EngineSettings.skip_next_input:
                 key = ask_key()
-                exit_check(key)
+                exit_check(key) # TODO fuse these two functions
             
             else:
                 EngineSettings.skip_next_input = False # TODO turn this into a function
-                
-            
-            """"""""""if ans == "close":
-                if navigation_level[-1] in end_correct:
-                    del navigation_level[-1]
-            
-            elif ans in end_correct:
-                # The last level is already a menue
-                if navigation_level[-1] in end_correct:
-                    navigation_level[-1]=ans
-                    
-                #The player opens a menue
-                else:
-                    navigation_level.append(ans)""""""""" # TODO
     
     try:
         inner_main()

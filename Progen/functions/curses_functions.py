@@ -3,7 +3,7 @@ import curses
 from classes import EngineSettings, ExitScript, EngineConstants
 from .game_logics import generate_room
 
-def ask_key():
+def ask_key(checking_exit = True):
     while True:
         try :
             key = EngineConstants.stdscr.getch()
@@ -61,7 +61,7 @@ def exit_check(key):
         while True:
             show_pause_menu()
             EngineConstants.main_win.refresh()
-            key = ask_key()
+            key = ask_key(False)
             
             if key == "leave":
                 raise ExitScript
@@ -81,7 +81,7 @@ def show_pause_menu():
         message = "Press escape again to leave"
         EngineConstants.pause_menu.addstr(EngineConstants.GAME_HEIGHT//4,
                             EngineConstants.GAME_WIDTH//2-len(message)//2,
-                            message)
+                            message) # TODO function to print middle
         
         EngineConstants.pause_menu.refresh()
         EngineConstants.main_win.refresh()
@@ -93,7 +93,7 @@ def show_game_over():
     message = "Oww you dead :c"
     EngineConstants.main_win.addstr(EngineConstants.GAME_HEIGHT//2,
                         EngineConstants.GAME_WIDTH//2-len(message)//2,
-                        message)
+                        message) # TODO function middle
                         
     EngineConstants.main_win.refresh()
     show_pause_menu() 
@@ -106,7 +106,18 @@ def show_room_transition():
         EngineConstants.room_transition_room_1.border()
         EngineConstants.room_transition_room_2.border()
         # TODO create a function to automatically put a message in the middle
-        EngineConstants.room_transition_location.addstr(2, 1, f"Current floor : {EngineSettings.current_floor}")
-        EngineConstants.room_transition_location.addstr(3, 1, f"Current room : {EngineSettings.current_room}")
-        
+        message = f"Current floor : {EngineSettings.current_floor}"
+        EngineConstants.room_transition_location.addstr(2,
+                            EngineConstants.GAME_WIDTH//2-len(message)//2, message)
+        message = f"Current room : {EngineSettings.current_room}"
+        EngineConstants.room_transition_location.addstr(3,
+                            EngineConstants.GAME_WIDTH//2-len(message)//2, message)
+        EngineConstants.room_transition_room_1.addstr(2, 1, f"{rooms[0]}")
+        EngineConstants.room_transition_room_2.addstr(2, 1, f"{rooms[1]}")
         refresh_main_win()
+        key = 0 
+        while key not in (49, 50):
+            key = ask_key()
+        chosen_room = rooms[key - 49]
+        EngineSettings.game_nav = f"{chosen_room}"
+        EngineSettings.skip_next_input = True # TODO turn this into a function
