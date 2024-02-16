@@ -1,9 +1,13 @@
 import random
 from math import ceil
 
+from classes import spawn_monster
+from classes import GameConstants as GCon
+from classes import GameVariables as GVar
+from classes import GameWindows as GWin
 from .curses_functions import refresh_main_win, ask_key, exit_check
 from .shared_functions import full_stat
-from classes import spawn_monster, EngineConstants, EngineSettings
+from .shared_functions import skip_next_input
 
 """
 What to do during a fight
@@ -44,17 +48,17 @@ def combat(player, current_monsters, colors):
     
     combat_screen(player, current_monsters, colors)
     
-    while EngineSettings.game_nav == "combat":
+    while GVar.game_nav == "combat":
         combat_screen(player, current_monsters, colors)
         refresh_main_win()
         combat_turn(player, current_monsters)
         
         if player.current_hp <= 0:
-            EngineSettings.game_nav = "game_over"
+            GVar.game_nav = "game_over"
         elif sum(monster.current_hp for monster in current_monsters) <= 0:
-            EngineSettings.game_nav = "room_transition"
+            GVar.game_nav = "room_transition"
             
-    EngineSettings.skip_next_input = True # TODO turn this into a function
+    skip_next_input()
 
 def combat_turn(player, current_monsters):
     
@@ -72,7 +76,6 @@ def player_combat_turn(player, current_monsters):
     while True :
         while True: # Choose skill
             key = ask_key()
-            exit_check(key) # TODO fuse these two functions
             if key in (49, 50, 51, 52): # 1, 2, 3, 4
                 chosen_skill = player.equipped_skills[key - 49]
                 dealt_damage = chosen_skill.damage
@@ -81,8 +84,8 @@ def player_combat_turn(player, current_monsters):
     # TODO shows selected skill
         while True: # Choose target or cancel
             key = ask_key()
-            exit_check(key) # TODO fuse these two functions
-            if key in range(49, 49 + len(current_monsters)): # 1, 2, etc.
+            if (key in range(49, 49 + len(current_monsters)) # 1, 2, etc.
+                       and current_monsters[key - 49].current_hp > 0): 
                 target = current_monsters[key - 49]
                 damage_received = receive_damage(target, dealt_damage)
                 log_message = (f" {player.name} uses {chosen_skill.name}\n"
@@ -120,48 +123,48 @@ def receive_damage(target, damage):
     return (f"{target.name} received {actual_damage} damage\n")
     
 def print_logs(message):
-    EngineConstants.combat_logs.clear()
-    EngineConstants.combat_logs.addstr(1, 0, message)
+    GWin.combat_logs.clear()
+    GWin.combat_logs.addstr(1, 0, message)
     
 def combat_screen(player, current_monsters, colors):
     health_length = 60
-    EngineConstants.combat_monster.clear()
-    EngineConstants.combat_player.clear()
+    GWin.combat_monster.clear()
+    GWin.combat_player.clear()
     
-    EngineConstants.combat_monster.border()
-    EngineConstants.combat_player.border()
-    EngineConstants.combat_logs.border()
-    EngineConstants.combat_location.border()
+    GWin.combat_monster.border()
+    GWin.combat_player.border()
+    GWin.combat_logs.border()
+    GWin.combat_location.border()
     
     # Show the current location
-    EngineConstants.combat_location.addstr(1, 1, f"Current floor : {EngineSettings.current_floor}")
-    EngineConstants.combat_location.addstr(3, 1, f"Current room : {EngineSettings.current_room}")
+    GWin.combat_location.addstr(1, 1, f"Current floor : {GVar.current_floor}")
+    GWin.combat_location.addstr(3, 1, f"Current room : {GVar.current_room}")
     
     # Show the monsters
     for number, monster in enumerate(current_monsters):
-        EngineConstants.combat_monster.addstr(1+5*number, 1,
+        GWin.combat_monster.addstr(1+5*number, 1,
                               f"[{number+1}] {monster.name}   lvl {monster.level}")
-        EngineConstants.combat_monster.addstr(2+5*number, 1,
+        GWin.combat_monster.addstr(2+5*number, 1,
                               f"{monster.current_hp} / {monster.stats['max_hp']}")
         
         show_remaining_hp = ceil(monster.current_hp / monster.stats['max_hp']
                                  * health_length)
-        EngineConstants.combat_monster.addstr(3+5*number, 1, "░"*health_length)
-        EngineConstants.combat_monster.addstr(3+5*number, 1, "█"*show_remaining_hp)
+        GWin.combat_monster.addstr(3+5*number, 1, "░"*health_length)
+        GWin.combat_monster.addstr(3+5*number, 1, "█"*show_remaining_hp)
         
     #Show the player
-    EngineConstants.combat_player.addstr(1, 1,
+    GWin.combat_player.addstr(1, 1,
                          f"{player.name}   lvl {player.level}",
                          colors["player_color"])
     
-    EngineConstants.combat_player.addstr(2, 1, f"{player.current_hp} / {player.max_hp}")
+    GWin.combat_player.addstr(2, 1, f"{player.current_hp} / {player.max_hp}")
     
     show_remaining_hp = ceil(player.current_hp / player.max_hp * health_length)
-    EngineConstants.combat_player.addstr(3, 1, "░"*health_length)
-    EngineConstants.combat_player.addstr(3, 1, "█"*show_remaining_hp)
+    GWin.combat_player.addstr(3, 1, "░"*health_length)
+    GWin.combat_player.addstr(3, 1, "█"*show_remaining_hp)
     
     # Show the player's skills
     skill_offset = 0
     for i, skill in enumerate(player.equipped_skills):
-        EngineConstants.combat_player.addstr(5, 1+skill_offset, f"[{i+1}] {skill.name} | ")
+        GWin.combat_player.addstr(5, 1+skill_offset, f"[{i+1}] {skill.name} | ")
         skill_offset += len(f"[{i+1}] {skill.name} | ")

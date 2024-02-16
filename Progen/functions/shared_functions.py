@@ -1,6 +1,7 @@
 import curses
 
 from constants import Color
+from classes import GameVariables as GVar
         
 # Return the total stats of the player from their gears
 def full_stat(player,stat_type):
@@ -31,3 +32,6 @@ def character_print(character):
             f"{character.name}"
             f"\033[39m"
             )
+
+def skip_next_input():
+    GVar.skip_next_input = True
