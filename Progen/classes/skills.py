@@ -41,7 +41,7 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 15,
+                "damage" : 15+5000,
                 "damage_multiplier" : (3, 6),
                 "side_effect" : None
             },

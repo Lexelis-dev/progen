@@ -107,24 +107,40 @@ def show_game_over():
     
 def show_room_transition():
     if ((GVar.current_room+1) %5) != 0:
+        GVar.current_room += 1
+    else:
+        GVar.current_room = 1
+        GVar.current_floor += 1
+        
+    GWin.main_win.clear()
+    GWin.room_transition_location.border()
+    GWin.room_transition_room_1.border()
+    GWin.room_transition_room_2.border()
+    # TODO create a function to automatically put a message in the middle
+    message = f"Next floor : {GVar.current_floor}"
+    GWin.room_transition_location.addstr(2,
+                        GCon.GAME_WIDTH//2-len(message)//2, message)
+    message = f"Next room : {GVar.current_room}"
+    GWin.room_transition_location.addstr(3,
+                        GCon.GAME_WIDTH//2-len(message)//2, message)
+    
+    if ((GVar.current_room) %5) != 0:
+        
         rooms = generate_room(2)
-        GWin.main_win.clear()
-        GWin.room_transition_location.border()
-        GWin.room_transition_room_1.border()
-        GWin.room_transition_room_2.border()
-        # TODO create a function to automatically put a message in the middle
-        message = f"Current floor : {GVar.current_floor}"
-        GWin.room_transition_location.addstr(2,
-                            GCon.GAME_WIDTH//2-len(message)//2, message)
-        message = f"Current room : {GVar.current_room}"
-        GWin.room_transition_location.addstr(3,
-                            GCon.GAME_WIDTH//2-len(message)//2, message)
+        
         GWin.room_transition_room_1.addstr(2, 1, f"{rooms[0]}")
         GWin.room_transition_room_2.addstr(2, 1, f"{rooms[1]}")
         refresh_main_win()
+        
         key = 0 
         while key not in (49, 50):
             key = ask_key()
         chosen_room = rooms[key - 49]
+        GVar.game_nav = f"{chosen_room}"
+        skip_next_input()
+        
+    else:
+        ask_key()
+        chosen_room = "boss_room"
         GVar.game_nav = f"{chosen_room}"
         skip_next_input()

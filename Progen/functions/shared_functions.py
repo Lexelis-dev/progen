@@ -33,5 +33,5 @@ def character_print(character):
             f"\033[39m"
             )
 
-def skip_next_input():
-    GVar.skip_next_input = True
+def skip_next_input(state = True):
+    GVar.skip_next_input = state

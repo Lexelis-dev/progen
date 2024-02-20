@@ -1,9 +1,9 @@
-"""----------Progen v0.7.5 documentation----------
+"""----------Progen v0.7.6 documentation----------
 Progen - Roguelite RPG
 
 Authors: Lexelis
-Date: 24/02/16
-Version: 0.7.5
+Date: 24/02/20
+Version: 0.7.6
 
 Description:
     Fight monsters, "escape" to quit
@@ -21,7 +21,7 @@ from functions import (
     start_combat, ask_key,
     create_color, exit_check, show_pause_menu,
     combat, starter_equipments, starter_skills, show_game_over,
-    show_room_transition
+    show_room_transition, skip_next_input, campfire
 )
 #--------------------The main function--------------------#
 def main(stdscr):
@@ -65,9 +65,8 @@ def main(stdscr):
     GWin.room_transition_room_1 = room_transition_room_1
     GWin.room_transition_room_2 = room_transition_room_2
     
-    GVar.current_floor=1
-    GVar.current_room=1
     player = Player("Lexelis") #TODO select name
+    GVar.main_player = player
     colors["player_color"] = create_color(*player.color)
         
     starter_equipments(player)
@@ -90,18 +89,25 @@ def main(stdscr):
                 current_monsters = start_combat(player)
                 combat(player, current_monsters, colors)
                 
+            elif GVar.game_nav == "boss_room": #TODO boss room
+                current_monsters = start_combat(player)
+                combat(player, current_monsters, colors)
+                
             elif GVar.game_nav == "game_over":
                 show_game_over()
                 
             elif GVar.game_nav == "room_transition":
                 show_room_transition()
                 
+            elif GVar.game_nav == "campfire":
+                campfire()
+                
                 
             if not GVar.skip_next_input:
                 key = ask_key()
             
             else:
-                GVar.skip_next_input = False # TODO turn this into a function
+                skip_next_input(False)
     
     try:
         inner_main()
@@ -133,5 +139,4 @@ if __name__ == "__main__":
     # Show skill info
     # Start of game
     # Save and load?
-    # Room transition
     # Have less variables, externalise the values (in packages)

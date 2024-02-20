@@ -7,3 +7,5 @@ from .curses_functions import (
 from .combat_logics import (
     combat, start_combat, combat_turn, combat_screen
 )
+from .shared_functions import skip_next_input
+from .campfire_logics import campfire
