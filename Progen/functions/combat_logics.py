@@ -56,6 +56,8 @@ def combat(player, current_monsters, colors):
         if player.current_hp <= 0:
             GVar.game_nav = "game_over"
         elif sum(monster.current_hp for monster in current_monsters) <= 0:
+            player.gold += sum(monster.gold_drop for monster in current_monsters)
+            player.exp += sum(monster.exp_drop for monster in current_monsters)
             GVar.game_nav = "room_transition"
             
     skip_next_input()

@@ -34,6 +34,22 @@ skill_list = {
 #--------------------------Rarity white--------------------------
     "white" : 
         {
+            
+        "test" : {
+            "name" : "TEST",
+            "skill_type" : "attack",
+            "damage_type" : "divine",
+            "target" : "single",
+            "attack" : {
+                "precision" : 1,
+                "damage" : 5000,
+                "damage_multiplier" : (0, 0),
+                "side_effect" : None
+            },
+            "effect" : None,
+            "heal" : None
+        },
+        
         "firebolt" : {
             "name" : "Fire Bolt",
             "skill_type" : "attack",
@@ -41,7 +57,7 @@ skill_list = {
             "target" : "single",
             "attack" : {
                 "precision" : 1,
-                "damage" : 15+5000,
+                "damage" : 15,
                 "damage_multiplier" : (3, 6),
                 "side_effect" : None
             },

@@ -139,4 +139,3 @@ if __name__ == "__main__":
     # Show skill info
     # Start of game
     # Save and load?
-    # Have less variables, externalise the values (in packages)

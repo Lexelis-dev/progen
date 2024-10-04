@@ -106,7 +106,7 @@ def show_game_over():
     show_pause_menu() 
     
 def show_room_transition():
-    if ((GVar.current_room+1) %5) != 0:
+    if ((GVar.current_room+1) %5) != 0: #TODO boss room
         GVar.current_room += 1
     else:
         GVar.current_room = 1
