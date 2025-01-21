@@ -7,18 +7,20 @@ import random
 
 
 class Skill:
+    # rarity, name, level, damage, precision
     def __init__(self, level, rarity, skill_type=None):
         self.rarity = rarity
         
         if skill_type == None :
             random_skill = random.choice(tuple(skill_list[rarity]))
-            chosen_skill = skill_list["white"][random_skill]
+            chosen_skill = skill_list[rarity][random_skill]
         
         self.name = chosen_skill["name"]
         self.level = level
         
         if chosen_skill["attack"] == None :
             self.damage = None
+            
         else :
             attack_stats = chosen_skill["attack"]
             self.precision = attack_stats["precision"
@@ -27,6 +29,7 @@ class Skill:
             damage_multiplier = attack_stats["damage_multiplier"]
             self.damage = (base_damage 
                            + self.level*random.randint(*damage_multiplier))
+            
             if attack_stats["side_effect"] == None :
                 pass #TODO
     

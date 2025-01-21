@@ -8,6 +8,10 @@ from .game_logics import generate_room
 from .shared_functions import skip_next_input
 
 def ask_key(checking_exit = True):
+    """
+    Out :
+        curses.key, "leave" if trying to quit game
+    """
     while True:
         try :
             key = GWin.stdscr.getch()
@@ -16,7 +20,7 @@ def ask_key(checking_exit = True):
             pass
         
         if (key != -1) and (key != curses.KEY_RESIZE):
-            if key == 27:
+            if key == 27: # Escape key
                 if GVar.paused == True:
                     return "leave"
                 else:
@@ -25,6 +29,7 @@ def ask_key(checking_exit = True):
             else:
                 return key
         
+        # If screen in resized
         elif key !=-1 and key == curses.KEY_RESIZE:
             resize_screen(GWin.main_win, GCon.GAME_HEIGHT, GCon.GAME_WIDTH)
             if GVar.paused == True:
@@ -37,10 +42,12 @@ def ask_key(checking_exit = True):
 def resize_screen(window, win_height, win_width): # TODO get rid of argument, have windows resize with the correct size
     screen_height, screen_width = GWin.stdscr.getmaxyx()
     
+    # If too small, center the window
     if screen_height > win_height+5 or screen_width > win_width+14:
         window.mvwin(screen_height//2 - win_height//2,
                      screen_width//2 - win_width//2)
     
+    # If too small resize the terminal
     else:
         curses.resize_term(win_height+5, win_width+14)
         screen_height, screen_width = GWin.stdscr.getmaxyx()
@@ -55,7 +62,7 @@ def resize_screen(window, win_height, win_width): # TODO get rid of argument, ha
 def refresh_main_win():
     resize_screen(GWin.main_win, GCon.GAME_HEIGHT, GCon.GAME_WIDTH)
 
-def create_color(r, g, b, color_number=[2]):
+def create_color(r, g, b, color_number=[2]): # TODO need to be reviewed
     curses.init_color(color_number[0], r, g, b)
     curses.init_pair(color_number[0], color_number[0], curses.COLOR_BLACK)
     actual_color = curses.color_pair(color_number[0])
@@ -106,9 +113,12 @@ def show_game_over():
     show_pause_menu() 
     
 def show_room_transition():
-    if ((GVar.current_room+1) %5) != 0: #TODO boss room
+    # Change floor and room
+    #TODO boss room
+    if ((GVar.current_room+1) %5) != 0: # Is not boss room
         GVar.current_room += 1
-    else:
+        
+    else: # Was boss room
         GVar.current_room = 1
         GVar.current_floor += 1
         
@@ -116,6 +126,7 @@ def show_room_transition():
     GWin.room_transition_location.border()
     GWin.room_transition_room_1.border()
     GWin.room_transition_room_2.border()
+    
     # TODO create a function to automatically put a message in the middle
     message = f"Next floor : {GVar.current_floor}"
     GWin.room_transition_location.addstr(2,
@@ -133,7 +144,7 @@ def show_room_transition():
         refresh_main_win()
         
         key = 0 
-        while key not in (49, 50):
+        while key not in (49, 50): # Wait for player to choose the room
             key = ask_key()
         chosen_room = rooms[key - 49]
         GVar.game_nav = f"{chosen_room}"

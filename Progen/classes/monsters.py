@@ -1,9 +1,12 @@
 import random
 
+
+# TODO have biomes that species can't spawn in
 class Monster:
     def __init__(self, player_level,chosen_species):
         species_info = species[chosen_species]
         
+        # Assign name and color based on species
         self.name = species_info["name"]
         self.color = species_info["color"]
         
@@ -21,6 +24,7 @@ class Monster:
             self.skills.append(MonsterSkill(species_info["skills"][i]))
         
         # Set all stats at 0
+        # Without the copy all monsters will have the same stats, for some reasons
         self.stats = base_stats.copy()
                 
         # Try to modify all stats
@@ -60,7 +64,7 @@ species = {
     "goblin" : {
         "name" : "Goblin",
         "spawn_chance" : 0.3,
-        "color" : (81, 176, 108),
+        "color" : (81, 176, 108), # 255 RGB
         "level_range" : (-1, 2),
         "exp_drop" : 50,
         "exp_drop_multiplier" : 10,
@@ -219,9 +223,10 @@ max_stats = {
    "fer" : None,
    "vamp" : None 
 }
-def spawn_monster(player_level):
+
+def spawn_monster(player_level): # Create and return monster instance
     
-    species_names = tuple(species)
+    species_names = tuple(species) # List of species names
     spawn_chances = (species_info["spawn_chance"] for species_info in species.values())
     
     chosen_species = random.choices(species_names, weights=spawn_chances, k=1)[0]

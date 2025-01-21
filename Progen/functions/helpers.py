@@ -4,9 +4,11 @@ from .shared_functions import full_stat, full_item_print, character_print
 from .curses_functions import ask_key
 
 # Used to fully exit the script  
+# TODO remove because we have a exception.py in classes ???
 class ExitScript(Exception):
     pass
         
+# TODO remove because unused?
 def limited_choices(stdscr,player,navigation_level,ans):
     if navigation_level[-1] == "progen":
         if ans == "1" :
@@ -27,6 +29,7 @@ def limited_choices(stdscr,player,navigation_level,ans):
     if ans == 27:
         return "exit."
         
+# TODO remove because unused?
 # Show relevant information
 def prompt(player,navigation_level):
     if navigation_level[-1] == "progen":

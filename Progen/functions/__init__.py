@@ -1,5 +1,4 @@
-from .helpers import limited_choices
-from .game_logics import open_chest, starter_equipments, starter_skills
+from .game_logics import starter_equipments, starter_skills
 from .curses_functions import (
     resize_screen, ask_key, create_color,
     exit_check, show_pause_menu, refresh_main_win, show_game_over, show_room_transition
